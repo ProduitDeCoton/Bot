@@ -1,15 +1,23 @@
 package res;
 
-public class Res {
-    public String startMessage = "Привет, я чат-бот! Чтобы узнать что я умею, напишите \"Помощь\"";
-    public String helpMessage = """
+public enum Res {
+    startMessage ("Привет, я чат-бот! Чтобы узнать что я умею, напишите \"Помощь\""),
+    helpMessage ( """
             Я умею:
             -Задать вам вопрос и проверить ваш ответ. Для этого напишите "Задай вопрос"
-            -Ну и здороваться могу, да. Просто напишите "Привет\"""";
-    public String greetingMessage = "Привет)";
-    public String questionMessage1 = "Солнце - это звезда?";
-    public String questionMessage2 = "Земля крутиться вокруг солнца?";
-    public String questionMessage3 = "Луна - это планета?";
+            -Ну и здороваться могу, да. Просто напишите "Привет\""""
+    ),
+    greetingMessage ("Привет)"),
+    questionMessage1 ("Солнце - это звезда?"),
+    questionMessage2 ("Земля крутится вокруг солнца?"),
+    questionMessage3 ("Луна - это планета?");
 
+    private final String message;
 
+    public String getMessage() {
+        return message;
+    }
+    Res(String messages) {
+        this.message = messages;
+    }
 }
