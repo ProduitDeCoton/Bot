@@ -10,7 +10,14 @@ public enum Res {
     greetingMessage ("Привет)"),
     questionMessage1 ("Солнце - это звезда?"),
     questionMessage2 ("Земля крутится вокруг солнца?"),
-    questionMessage3 ("Луна - это планета?");
+    questionMessage3 ("Луна - это планета?"),
+    answerMessageYes1 ("Да"),
+    answerMessageNo1 ("Нет"),
+    answerMessageYes2 ("Да"),
+    answerMessageNo2 ("Нет"),
+    answerMessageYes3 ("Да"),
+    answerMessageNo3 ("Нет"),
+    errorMessage ("Я ничего не понял! Чтобы узнать, что я умею, введите \"Помощь\"");
 
     private final String message;
 
