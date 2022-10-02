@@ -1,8 +1,6 @@
 package res;
 
 public enum Commands {
-    yes("Да"),
-    no("Нет"),
     help("/help"),
     hello("Привет"),
     startQuiz("Задай вопросы");
