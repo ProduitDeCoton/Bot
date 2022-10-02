@@ -1,6 +1,6 @@
 import java.util.Scanner;
 
-public class Console implements Dialogs {
+public class Console extends BotLogic {
 
     @Override
     public void say(String message) {
@@ -8,8 +8,8 @@ public class Console implements Dialogs {
     }
 
     @Override
-    public String getMessage() {
-        Scanner message = new Scanner(System.in);
-        return message.toString();
+    public String getAnswer() {
+        Scanner scanner = new Scanner(System.in);
+        return scanner.nextLine();
     }
 }
