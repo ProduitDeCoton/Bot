@@ -18,7 +18,7 @@ public enum BotMessages {
     ifWrong ("Неправильно :( Правильный ответ: "),
     success("Викторина закончилась. Вы победили!"),
     failure("Викторина закончилась. Better luck next time!"),
-    error("Я ничего не понял! Чтобы узнать, что я умею, введите \"Помощь\"");
+    error("Я ничего не понял! Чтобы узнать, что я умею, введите \"/help\"");
     private final String message;
 
     public String getMessage() {
