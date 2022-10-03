@@ -11,27 +11,30 @@ public abstract class BotLogic {
         String answer = getAnswer();
         if (answer.equals(BotMessages.expectedAnswer1.getMessage())) {
             say(BotMessages.ifCorrect.getMessage());
+            nCorrectAnswers++;
         } else {
             say(BotMessages.ifWrong.getMessage() + BotMessages.expectedAnswer1.getMessage());
-            nCorrectAnswers++;
+
         }
 
         say(BotMessages.question2.getMessage());
         answer = getAnswer();
         if (answer.equals(BotMessages.expectedAnswer2.getMessage())) {
             say(BotMessages.ifCorrect.getMessage());
+            nCorrectAnswers++;
         } else {
             say(BotMessages.ifWrong.getMessage() + BotMessages.expectedAnswer2.getMessage());
-            nCorrectAnswers++;
+
         }
 
         say(BotMessages.question3.getMessage());
         answer = getAnswer();
         if (answer.equals(BotMessages.expectedAnswer3.getMessage())) {
             say(BotMessages.ifCorrect.getMessage());
+            nCorrectAnswers++;
         } else {
             say(BotMessages.ifWrong.getMessage() + BotMessages.expectedAnswer3.getMessage());
-            nCorrectAnswers++;
+
         }
 
 
