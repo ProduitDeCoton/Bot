@@ -5,12 +5,13 @@ import res.*;
 public abstract class BotLogic {
     public abstract void say(String message);
     public abstract String getUserMessage();
+    public abstract String waitMessage();
 
     public void startQuiz() {
         // TODO 2: подумать над удобным хранением вопросов, чтобы можно было обернуть в цикл
         int nCorrectAnswers = 0;
         say(BotMessages.question1.getMessage());
-        String answer = getUserMessage();
+        String answer = waitMessage();
         if (answer.equals(BotMessages.expectedAnswer1.getMessage())) {
             say(BotMessages.ifCorrect.getMessage());
         } else {
@@ -19,7 +20,7 @@ public abstract class BotLogic {
         }
 
         say(BotMessages.question2.getMessage());
-        answer = getUserMessage();
+        answer = waitMessage();
         if (answer.equals(BotMessages.expectedAnswer2.getMessage())) {
             say(BotMessages.ifCorrect.getMessage());
         } else {
@@ -28,7 +29,7 @@ public abstract class BotLogic {
         }
 
         say(BotMessages.question3.getMessage());
-        answer = getUserMessage();
+        answer = waitMessage();
         if (answer.equals(BotMessages.expectedAnswer3.getMessage())) {
             say(BotMessages.ifCorrect.getMessage());
         } else {
