@@ -1,3 +1,5 @@
+import logic.BotLogic;
+
 import java.util.Scanner;
 
 public class Console extends BotLogic {
@@ -8,8 +10,13 @@ public class Console extends BotLogic {
     }
 
     @Override
-    public String getAnswer() {
+    public String getUserMessage() {
         Scanner scanner = new Scanner(System.in);
         return scanner.nextLine();
+    }
+
+    public static void main(String[] args) {
+        BotLogic consoleBot = new Console();
+        consoleBot.sendAnswer(consoleBot.getUserMessage());
     }
 }
