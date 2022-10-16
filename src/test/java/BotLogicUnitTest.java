@@ -8,25 +8,25 @@ public class BotLogicUnitTest {
     @Test
     public void question1() {
         Assert.assertNotEquals("Question 1 must not be empty string",
-                "", BotMessages.question1.getMessage());
+                "", BotMessages.question1);
         Assert.assertNotEquals("Question 1 must not be null",
-                null, BotMessages.question1.getMessage());
+                null, BotMessages.question1);
     }
 
     @Test
     public void question2() {
         Assert.assertNotEquals("Question 2 must not be empty string",
-                "", BotMessages.question2.getMessage());
+                "", BotMessages.question2);
         Assert.assertNotEquals("Question 2 must not be null",
-                null, BotMessages.question2.getMessage());
+                null, BotMessages.question2);
     }
 
     @Test
     public void question3() {
         Assert.assertNotEquals("Question 3 must not be empty string",
-                "", BotMessages.question3.getMessage());
+                "", BotMessages.question3);
         Assert.assertNotEquals("Question 3 must not be null",
-                null, BotMessages.question3.getMessage());
+                null, BotMessages.question3);
     }
 
 }
