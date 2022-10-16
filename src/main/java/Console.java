@@ -12,4 +12,9 @@ public class Console extends BotLogic {
         Scanner scanner = new Scanner(System.in);
         return scanner.nextLine();
     }
+
+    public static void main(String[] args) {
+        BotLogic consoleBot = new Console();
+        consoleBot.startBot();
+    }
 }
