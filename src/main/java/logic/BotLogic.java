@@ -5,10 +5,12 @@ import res.*;
 public abstract class BotLogic {
     public abstract void say(String message);
     public abstract String getUserMessage();
+    public abstract String waitMessage();
 
     public void startQuiz() {
         // TODO 2: подумать над удобным хранением вопросов, чтобы можно было обернуть в цикл
         int nCorrectAnswers = 0;
+
         say(BotMessages.question1);
         String answer = getUserMessage();
         if (answer.equals(BotMessages.expectedAnswer1)) {

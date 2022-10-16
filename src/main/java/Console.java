@@ -15,6 +15,11 @@ public class Console extends BotLogic {
         return scanner.nextLine();
     }
 
+    @Override
+    public String waitMessage() {
+        return getUserMessage();
+    }
+
     public static void main(String[] args) {
         BotLogic consoleBot = new Console();
         consoleBot.sendAnswer(consoleBot.getUserMessage());
