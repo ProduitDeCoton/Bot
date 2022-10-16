@@ -50,5 +50,6 @@ public abstract class BotLogic {
             default -> say(BotMessages.error.getMessage());
         }
     }
+
 }
 
