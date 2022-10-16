@@ -1,14 +1,16 @@
+package logic;
+
 import res.*;
 
 public abstract class BotLogic {
     public abstract void say(String message);
-    public abstract String getAnswer();
+    public abstract String getUserMessage();
 
     public void startQuiz() {
         // TODO 2: подумать над удобным хранением вопросов, чтобы можно было обернуть в цикл
         int nCorrectAnswers = 0;
         say(BotMessages.question1.getMessage());
-        String answer = getAnswer();
+        String answer = getUserMessage();
         if (answer.equals(BotMessages.expectedAnswer1.getMessage())) {
             say(BotMessages.ifCorrect.getMessage());
         } else {
@@ -17,7 +19,7 @@ public abstract class BotLogic {
         }
 
         say(BotMessages.question2.getMessage());
-        answer = getAnswer();
+        answer = getUserMessage();
         if (answer.equals(BotMessages.expectedAnswer2.getMessage())) {
             say(BotMessages.ifCorrect.getMessage());
         } else {
@@ -26,7 +28,7 @@ public abstract class BotLogic {
         }
 
         say(BotMessages.question3.getMessage());
-        answer = getAnswer();
+        answer = getUserMessage();
         if (answer.equals(BotMessages.expectedAnswer3.getMessage())) {
             say(BotMessages.ifCorrect.getMessage());
         } else {
@@ -39,21 +41,14 @@ public abstract class BotLogic {
         else say(BotMessages.failure.getMessage());
     }
 
-    void startBot() {
-        say(BotMessages.start.getMessage());
-        while (true) {
-            String answer = getAnswer();
-            // TODO 1: переделать на switch-case
-            if (Commands.help.getCommand().equals(answer)) {
-                say(BotMessages.help.getMessage());
-            } else if (Commands.startQuiz.getCommand().equals(answer)) {
-                startQuiz();
-            } else if (Commands.hello.getCommand().equals(answer)) {
-                say(BotMessages.greetings.getMessage());
-            }
-            else {
-                say(BotMessages.error.getMessage());
-            }
+    public void sendAnswer(String userMessage) {
+        switch (userMessage) {
+            case UserCommands.start -> say(BotMessages.start.getMessage());
+            case UserCommands.help -> say(BotMessages.help.getMessage());
+            case UserCommands.startQuiz -> startQuiz();
+            case UserCommands.hello -> say(BotMessages.greetings.getMessage());
+            default -> say(BotMessages.error.getMessage());
         }
     }
 }
+
