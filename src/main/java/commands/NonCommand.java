@@ -5,6 +5,13 @@ import java.util.regex.Matcher;
 
 public class NonCommand {
     public static String getCode(String authRedirectUri)  {
+        Pattern pattern = Pattern.compile("http://localhost:8080/auth/spotify/redirect\\?code=([-_A-Za-z0-9]+)");
+        Matcher matcher = pattern.matcher(authRedirectUri);
+
+        if (matcher.find()) {
+            return matcher.group(1);
+        }
+
         return null;
     }
 
