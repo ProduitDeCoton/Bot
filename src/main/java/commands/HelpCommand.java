@@ -29,7 +29,6 @@ public class HelpCommand extends ServiceCommand {
                         "\n" +
                         "❗Список команд\n" +
                         "/auth - аутентификация в 'spotify'\n" +
-                        "/nowplaying - посмотреть текущий трек\n" +
                         "/help - помощь\n");
     }
 }
