@@ -7,13 +7,13 @@ import java.util.HashMap;
 import java.util.Map;
 
 public class ActiveUsers {
-    private static Map<User, SpotifySession> activeUsers = new HashMap<>();
+    private static Map<Long, SpotifySession> activeUsers = new HashMap<Long, SpotifySession>();
 
     public static void updateActiveUsers(User user, SpotifySession session) {
-        activeUsers.put(user, session);
+        activeUsers.put(user.getId(), session);
     }
 
     public static SpotifySession getSession(User user) {
-        return activeUsers.get(user);
+        return activeUsers.get(user.getId());
     }
 }
