@@ -41,10 +41,11 @@ public final class BotLogic extends TelegramLongPollingCommandBot{
     @Override
     public void processNonCommandUpdate(Update update) {
         Message msg = update.getMessage();
+        User user = update.getMessage().getFrom();
         Long chatId = msg.getChatId();
         String userName = getUserName(msg);
 
-        String answer = nonCommand.nonCommandExecute(chatId, userName, msg.getText());
+        String answer = nonCommand.nonCommandExecute(user, userName, msg.getText());
         setAnswer(chatId, userName, answer);
     }
 
