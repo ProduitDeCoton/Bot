@@ -17,14 +17,14 @@ public class AuthCommand extends ServiceCommand {
         String redirectLink;
 
         try {
-            ActiveUsers.getSession(user);
+            redirectLink = ActiveUsers.getSession(user).buildAuthorizationCodeFlow();
+            redirectLink = redirectLink.replace("_", "\\_");
         } catch (NullPointerException | IllegalArgumentException e) {
             SpotifySession session = new SpotifySession();
             ActiveUsers.updateActiveUsers(user, session);
-        } finally {
             redirectLink = ActiveUsers.getSession(user).buildAuthorizationCodeFlow();
+            redirectLink = redirectLink.replace("_", "\\_");
         }
-
 
         String userName = (user.getUserName() != null) ? user.getUserName() :
                 String.format("%s %s", user.getLastName(), user.getFirstName());
