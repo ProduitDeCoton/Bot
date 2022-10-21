@@ -22,7 +22,7 @@ public class SpotifySession {
         this.code = code;
     }
 
-    public void buildAuthorizationCodeFlow() {
+    public String buildAuthorizationCodeFlow() {
         AuthorizationCodeFlow authorizationCodeFlow = new AuthorizationCodeFlow.Builder()
                 .setClientId(clientId)
                 .setRedirectUri(redirectUri)
@@ -32,7 +32,7 @@ public class SpotifySession {
                 ))
                 .build();
 
-        code = authorizationCodeFlow.constructUrl();
+        return authorizationCodeFlow.constructUrl();
     }
 
     public void buildAuthorizationRequestToken() {
