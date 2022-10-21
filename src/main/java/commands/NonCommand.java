@@ -1,10 +1,12 @@
 package commands;
 
+import exceptions.WrongAuthRedirectUriException;
+
 import java.util.regex.Pattern;
 import java.util.regex.Matcher;
 
 public class NonCommand {
-    public static String getCode(String authRedirectUri)  {
+    public static String getCode(String authRedirectUri) throws WrongAuthRedirectUriException {
         Pattern pattern = Pattern.compile("http://localhost:8080/auth/spotify/redirect\\?code=([-_A-Za-z0-9]+)");
         Matcher matcher = pattern.matcher(authRedirectUri);
 
@@ -12,7 +14,7 @@ public class NonCommand {
             return matcher.group(1);
         }
 
-        return null;
+        throw new WrongAuthRedirectUriException();
     }
 
     public String nonCommandExecute(Long chatId, String userName, String text) {
