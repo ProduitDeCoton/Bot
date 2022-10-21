@@ -16,7 +16,7 @@ public class SpotifySession {
     private String code;
     private AuthorizationCodeFlowTokenResponse token;
 
-    private SpotifyApi spotifyApi;
+    public SpotifyApi spotifyApi;
 
     public void setCode(String code) {
         this.code = code;
