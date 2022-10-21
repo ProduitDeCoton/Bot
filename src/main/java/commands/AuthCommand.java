@@ -28,6 +28,8 @@ public class AuthCommand extends ServiceCommand {
 
         String userName = (user.getUserName() != null) ? user.getUserName() :
                 String.format("%s %s", user.getLastName(), user.getFirstName());
+
+        userName = userName.replace("_", "\\_");
         sendAnswer(absSender, chat.getId(), this.getCommandIdentifier(), userName,
                 userName + ", пожалуйста, пройдите по ссылке ниже. Пройдите аутентификацию и предоставьте " +
                         "разрешения для работы бота." + "\n" + "\n" + redirectLink + "\n" + "\n" +
