@@ -12,7 +12,7 @@ public class NonCommandTest {
 
     @Test
     public void test_1() {
-        String test = "";
+        final String test = "";
 
         try {
             final String s = NonCommand.getCode(test);
@@ -25,7 +25,7 @@ public class NonCommandTest {
 
     @Test
     public void test_2() {
-        String test = redirectUri;
+        final String test = redirectUri;
 
         try {
             final String s = NonCommand.getCode(test);
@@ -38,7 +38,7 @@ public class NonCommandTest {
 
     @Test
     public void test_3() {
-        String test = "test";
+        final String test = "test";
 
         try {
             final String s = NonCommand.getCode(test);
@@ -51,7 +51,7 @@ public class NonCommandTest {
 
     @Test
     public void test_4() {
-        String test = redirectUri + "bb82338c_0ffe6666_f4f419fd";
+        final String test = redirectUri + "bb82338c_0ffe6666_f4f419fd";
 
         try {
             final String s = NonCommand.getCode(test);
@@ -64,7 +64,7 @@ public class NonCommandTest {
 
     @Test
     public void test_5() {
-        String test = redirectUri + "bb82338c_0ffe6666_f4f419fd&option=null";
+        final String test = redirectUri + "bb82338c_0ffe6666_f4f419fd&option=null";
 
         try {
             final String s = NonCommand.getCode(test);
@@ -77,7 +77,7 @@ public class NonCommandTest {
 
     @Test
     public void test_6() {
-        String test = redirectUri + "bb8233&8c_0ffe6666_f4f419fd";
+        final String test = redirectUri + "bb8233&8c_0ffe6666_f4f419fd";
 
         try {
             final String s = NonCommand.getCode(test);
@@ -90,7 +90,7 @@ public class NonCommandTest {
 
     @Test
     public void test_7() {
-        String test = redirectUri + "bb@82338c_0ffe6666_f4f4@19fd";
+        final String test = redirectUri + "bb@82338c_0ffe6666_f4f4@19fd";
 
         try {
             final String s = NonCommand.getCode(test);
