@@ -2,15 +2,13 @@ package commands;
 
 import exceptions.WrongAuthRedirectUriException;
 import logic.ActiveUsers;
-import org.apache.commons.logging.impl.AvalonLogger;
 import org.telegram.telegrambots.meta.api.objects.User;
 import spotify.exceptions.SpotifyActionFailedException;
 import spotify.exceptions.SpotifyAuthorizationFailedException;
-import spotify.models.errors.SpotifyError;
 import spotify_tools.SpotifySession;
 
-import java.util.regex.Pattern;
 import java.util.regex.Matcher;
+import java.util.regex.Pattern;
 
 public class NonCommand {
 
@@ -29,11 +27,16 @@ public class NonCommand {
         throw new WrongAuthRedirectUriException();
     }
 
-    public String nonCommandExecute(User user, String userName, String text) {
+    public String nonCommandExecute(User user, String text) {
         String answer;
-        String code;
+
+        if (text == null) {
+            answer = "Простите, я не понимаю Вас. Похоже, что Вы ввели сообщение, не соответствующее формату. Возможно, Вам поможет /help";
+            return answer;
+        }
+
         try {
-            code = getCode(text);
+            String code = getCode(text);
             SpotifySession session = ActiveUsers.getSession(user);
             session.setCode(code);
             session.buildAuthorizationRequestToken();
@@ -42,11 +45,9 @@ public class NonCommand {
             ActiveUsers.updateActiveUsers(user, session);
             answer = session.spotifyApi.getCurrentUser().getDisplayName() + ", вы успешно авторизовались!";
         } catch (WrongAuthRedirectUriException e) {
-            answer = "Похоже вы неправильно ввели ссылку, попробуйте ещё раз";
+            answer = "Похоже, вы неправильно ввели ссылку, попробуйте ещё раз";
         } catch (SpotifyAuthorizationFailedException | SpotifyActionFailedException e) {
             answer = "Неверный код. Попробуйте ещё раз.";
-        } catch (Exception e) {
-            answer = "Простите, я не понимаю Вас. Похоже, что Вы ввели сообщение, не соответствующее формату. Возможно, Вам поможет /help";
         }
         return answer;
     }
