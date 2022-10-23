@@ -8,7 +8,6 @@ import commands.NonCommand;
 
 
 public class NonCommandTest {
-    private final String redirectUri = "http://localhost:8080/auth/spotify/redirect?code=";
 
     /**
      * Пустая строка
@@ -31,7 +30,7 @@ public class NonCommandTest {
      */
     @Test
     public void test_empty_code() {
-        final String test = redirectUri;
+        final String test = System.getenv("SPOTIFY_REDIRECT_URI");
 
         try {
             final String code = NonCommand.getCode(test);
@@ -63,7 +62,7 @@ public class NonCommandTest {
      */
     @Test
     public void test_correct_uri() {
-        final String test = redirectUri + "bb82338c_0ffe6666_f4f419fd";
+        final String test = System.getenv("SPOTIFY_REDIRECT_URI") + "?code=" + "bb82338c_0ffe6666_f4f419fd";
 
         try {
             final String code = NonCommand.getCode(test);
@@ -79,7 +78,7 @@ public class NonCommandTest {
      */
     @Test
     public void test_correct_uri_option() {
-        final String test = redirectUri + "bb82338c_0ffe6666_f4f419fd&option=null";
+        final String test = System.getenv("SPOTIFY_REDIRECT_URI") + "?code=" + "bb82338c_0ffe6666_f4f419fd&option=null";
 
         try {
             final String code = NonCommand.getCode(test);
@@ -96,7 +95,7 @@ public class NonCommandTest {
      * Относится к группе подразделителей (sub-delims).
      */
     public void test_sub_delim() {
-        final String test = redirectUri + "bb8233&8c_0ffe6666_f4f419fd";
+        final String test = System.getenv("SPOTIFY_REDIRECT_URI") + "?code=" + "bb8233&8c_0ffe6666_f4f419fd";
 
         try {
             final String code = NonCommand.getCode(test);
@@ -113,7 +112,7 @@ public class NonCommandTest {
      */
     @Test
     public void test_gen_delim() {
-        final String test = redirectUri + "bb@82338c_0ffe6666_f4f4@19fd";
+        final String test = System.getenv("SPOTIFY_REDIRECT_URI") + "?code=" + "bb@82338c_0ffe6666_f4f4@19fd";
 
         try {
             final String code = NonCommand.getCode(test);
