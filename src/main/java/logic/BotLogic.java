@@ -1,12 +1,15 @@
 package logic;
 
+import commands.AuthCommand;
+import commands.HelpCommand;
+import commands.NonCommand;
+import commands.StartCommand;
+import org.telegram.telegrambots.extensions.bots.commandbot.TelegramLongPollingCommandBot;
 import org.telegram.telegrambots.meta.api.methods.send.SendMessage;
 import org.telegram.telegrambots.meta.api.objects.Message;
 import org.telegram.telegrambots.meta.api.objects.Update;
 import org.telegram.telegrambots.meta.api.objects.User;
 import org.telegram.telegrambots.meta.exceptions.TelegramApiException;
-import org.telegram.telegrambots.extensions.bots.commandbot.TelegramLongPollingCommandBot;
-import commands.*;
 
 
 public final class BotLogic extends TelegramLongPollingCommandBot{
@@ -45,7 +48,7 @@ public final class BotLogic extends TelegramLongPollingCommandBot{
         Long chatId = msg.getChatId();
         String userName = getUserName(msg);
 
-        String answer = nonCommand.nonCommandExecute(user, userName, msg.getText());
+        String answer = nonCommand.nonCommandExecute(user, msg.getText());
         setAnswer(chatId, userName, answer);
     }
 
