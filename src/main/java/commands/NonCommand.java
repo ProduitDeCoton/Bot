@@ -10,6 +10,10 @@ import spotify_tools.SpotifySession;
 import java.util.regex.Matcher;
 import java.util.regex.Pattern;
 
+/**
+ * Класс для обработки сообщений, вероятно содержащих код
+ * для получения токенов.
+ */
 public class NonCommand {
 
     /**
