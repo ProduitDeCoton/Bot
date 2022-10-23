@@ -98,11 +98,11 @@ public class NonCommandTest {
         }
     }
 
-    @Test
     /**
      * Разделитель &.
      * Относится к группе подразделителей (sub-delims).
      */
+    @Test
     public void test_sub_delim() {
         final String test = System.getenv("SPOTIFY_REDIRECT_URI") + "?code=" + "bb8233&8c_0ffe6666_f4f419fd";
 
