@@ -19,7 +19,7 @@ public class NonCommand {
      * @throws WrongAuthRedirectUriException строка не соответствует шаблону аутентификационного сообщения
      */
     public static String getCode(String authRedirectUri) throws WrongAuthRedirectUriException {
-        final Pattern pattern = Pattern.compile("http://localhost:8080/auth/spotify/redirect\\?code=([-_A-Za-z0-9]+)");
+        final Pattern pattern = Pattern.compile(System.getenv("SPOTIFY_REDIRECT_URI") + "\\?code=([-_A-Za-z0-9]+)");
         final Matcher matcher = pattern.matcher(authRedirectUri);
 
         if (matcher.find()) {
