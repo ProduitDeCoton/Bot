@@ -97,7 +97,7 @@ public class NonCommandTest {
             Assert.assertEquals("bb", s);
 
         } catch (Exception e) {
-            Assert.assertTrue(true);
+            Assert.assertTrue(false);
         }
     }
 }
