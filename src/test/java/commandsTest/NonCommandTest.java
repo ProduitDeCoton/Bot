@@ -14,7 +14,7 @@ public class NonCommandTest {
      * Пустая строка
      */
     @Test
-    public void test_1() {
+    public void test_empty() {
         final String test = "";
 
         try {
@@ -30,7 +30,7 @@ public class NonCommandTest {
      * Непустой URI, но пустое значение у ключа code
      */
     @Test
-    public void test_2() {
+    public void test_empty_code() {
         final String test = redirectUri;
 
         try {
@@ -46,7 +46,7 @@ public class NonCommandTest {
      * Неправильный URI
      */
     @Test
-    public void test_3() {
+    public void test_wrong_uri() {
         final String test = "test";
 
         try {
@@ -62,7 +62,7 @@ public class NonCommandTest {
      * Правильный URI
      */
     @Test
-    public void test_4() {
+    public void test_correct_uri() {
         final String test = redirectUri + "bb82338c_0ffe6666_f4f419fd";
 
         try {
@@ -78,7 +78,7 @@ public class NonCommandTest {
      * Правильный URI, есть ключ option помимо code.
      */
     @Test
-    public void test_5() {
+    public void test_correct_uri_option() {
         final String test = redirectUri + "bb82338c_0ffe6666_f4f419fd&option=null";
 
         try {
@@ -95,7 +95,7 @@ public class NonCommandTest {
      * Разделитель &.
      * Относится к группе подразделителей (sub-delims).
      */
-    public void test_6() {
+    public void test_sub_delim() {
         final String test = redirectUri + "bb8233&8c_0ffe6666_f4f419fd";
 
         try {
@@ -112,7 +112,7 @@ public class NonCommandTest {
      * Состоит в группе главных разделителей (gen-delims).
      */
     @Test
-    public void test_7() {
+    public void test_gen_delim() {
         final String test = redirectUri + "bb@82338c_0ffe6666_f4f4@19fd";
 
         try {
