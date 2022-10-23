@@ -5,7 +5,7 @@ import org.junit.Assert;
 import org.junit.Test;
 
 import commands.NonCommand;
-
+import exceptions.WrongAuthRedirectUriException;
 
 public class NonCommandTest {
 
@@ -20,8 +20,11 @@ public class NonCommandTest {
             final String code = NonCommand.getCode(test);
             Assert.assertNull(code);
 
-        } catch (Exception e) {
+        } catch (WrongAuthRedirectUriException e) {
             Assert.assertTrue(true);
+
+        } catch (Exception e) {
+            Assert.fail();
         }
     }
 
@@ -36,8 +39,11 @@ public class NonCommandTest {
             final String code = NonCommand.getCode(test);
             Assert.assertNull(code);
 
-        } catch (Exception e) {
+        } catch (WrongAuthRedirectUriException e) {
             Assert.assertTrue(true);
+
+        } catch (Exception e) {
+            Assert.assertTrue(false);
         }
     }
 
@@ -52,8 +58,11 @@ public class NonCommandTest {
             final String code = NonCommand.getCode(test);
             Assert.assertNull(code);
 
-        } catch (Exception e) {
+        } catch (WrongAuthRedirectUriException e) {
             Assert.assertTrue(true);
+
+        } catch (Exception e) {
+            Assert.assertTrue(false);
         }
     }
 
@@ -69,7 +78,7 @@ public class NonCommandTest {
             Assert.assertEquals("bb82338c_0ffe6666_f4f419fd", code);
 
         } catch (Exception e) {
-            Assert.assertTrue(false);
+            Assert.fail();
         }
     }
 
@@ -85,7 +94,7 @@ public class NonCommandTest {
             Assert.assertEquals("bb82338c_0ffe6666_f4f419fd", code);
 
         } catch (Exception e) {
-            Assert.assertTrue(false);
+            Assert.fail();
         }
     }
 
@@ -102,7 +111,7 @@ public class NonCommandTest {
             Assert.assertEquals("bb8233", code);
 
         } catch (Exception e) {
-            Assert.assertTrue(false);
+            Assert.fail();
         }
     }
 
@@ -119,7 +128,7 @@ public class NonCommandTest {
             Assert.assertEquals("bb", code);
 
         } catch (Exception e) {
-            Assert.assertTrue(false);
+            Assert.fail();
         }
     }
 }
