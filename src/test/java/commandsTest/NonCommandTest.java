@@ -18,8 +18,8 @@ public class NonCommandTest {
         final String test = "";
 
         try {
-            final String s = NonCommand.getCode(test);
-            Assert.assertEquals(null, s);
+            final String code = NonCommand.getCode(test);
+            Assert.assertEquals(null, code);
 
         } catch (Exception e) {
             Assert.assertTrue(true);
@@ -34,8 +34,8 @@ public class NonCommandTest {
         final String test = redirectUri;
 
         try {
-            final String s = NonCommand.getCode(test);
-            Assert.assertEquals(null, s);
+            final String code = NonCommand.getCode(test);
+            Assert.assertEquals(null, code);
 
         } catch (Exception e) {
             Assert.assertTrue(true);
@@ -50,8 +50,8 @@ public class NonCommandTest {
         final String test = "test";
 
         try {
-            final String s = NonCommand.getCode(test);
-            Assert.assertEquals(null, s);
+            final String code = NonCommand.getCode(test);
+            Assert.assertEquals(null, code);
 
         } catch (Exception e) {
             Assert.assertTrue(true);
@@ -66,8 +66,8 @@ public class NonCommandTest {
         final String test = redirectUri + "bb82338c_0ffe6666_f4f419fd";
 
         try {
-            final String s = NonCommand.getCode(test);
-            Assert.assertEquals("bb82338c_0ffe6666_f4f419fd", s);
+            final String code = NonCommand.getCode(test);
+            Assert.assertEquals("bb82338c_0ffe6666_f4f419fd", code);
 
         } catch (Exception e) {
             Assert.assertTrue(false);
@@ -82,8 +82,8 @@ public class NonCommandTest {
         final String test = redirectUri + "bb82338c_0ffe6666_f4f419fd&option=null";
 
         try {
-            final String s = NonCommand.getCode(test);
-            Assert.assertEquals("bb82338c_0ffe6666_f4f419fd", s);
+            final String code = NonCommand.getCode(test);
+            Assert.assertEquals("bb82338c_0ffe6666_f4f419fd", code);
 
         } catch (Exception e) {
             Assert.assertTrue(false);
@@ -99,8 +99,8 @@ public class NonCommandTest {
         final String test = redirectUri + "bb8233&8c_0ffe6666_f4f419fd";
 
         try {
-            final String s = NonCommand.getCode(test);
-            Assert.assertEquals("bb8233", s);
+            final String code = NonCommand.getCode(test);
+            Assert.assertEquals("bb8233", code);
 
         } catch (Exception e) {
             Assert.assertTrue(false);
@@ -116,8 +116,8 @@ public class NonCommandTest {
         final String test = redirectUri + "bb@82338c_0ffe6666_f4f4@19fd";
 
         try {
-            final String s = NonCommand.getCode(test);
-            Assert.assertEquals("bb", s);
+            final String code = NonCommand.getCode(test);
+            Assert.assertEquals("bb", code);
 
         } catch (Exception e) {
             Assert.assertTrue(false);
