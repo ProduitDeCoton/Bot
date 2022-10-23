@@ -26,7 +26,7 @@ public class NonCommandTest {
     }
 
     /**
-     * Непустой URI, но пустое значение у ключа code
+     * Непустой корректный URI, но пустое значение у ключа code
      */
     @Test
     public void test_empty_code() {
