@@ -19,7 +19,7 @@ public class NonCommandTest {
 
         try {
             final String code = NonCommand.getCode(test);
-            Assert.assertEquals(null, code);
+            Assert.assertNull(code);
 
         } catch (Exception e) {
             Assert.assertTrue(true);
@@ -35,7 +35,7 @@ public class NonCommandTest {
 
         try {
             final String code = NonCommand.getCode(test);
-            Assert.assertEquals(null, code);
+            Assert.assertNull(code);
 
         } catch (Exception e) {
             Assert.assertTrue(true);
@@ -51,7 +51,7 @@ public class NonCommandTest {
 
         try {
             final String code = NonCommand.getCode(test);
-            Assert.assertEquals(null, code);
+            Assert.assertNull(code);
 
         } catch (Exception e) {
             Assert.assertTrue(true);
