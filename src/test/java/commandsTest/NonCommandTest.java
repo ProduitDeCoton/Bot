@@ -8,6 +8,15 @@ import commands.NonCommand;
 import exceptions.WrongAuthRedirectUriException;
 
 public class NonCommandTest {
+    @Test
+    public void env_var_uri_base_test() {
+        final String evUriBase = "SPOTIFY_REDIRECT_URI";
+        final String uriBase = System.getenv(evUriBase);
+
+        if (uriBase == null || uriBase.length() == 0) {
+            Assert.fail("Переменная среды " + evUriBase + " не задана или её длина равна нулю.");
+        }
+    }
 
     @Test
     public void test_null() {
