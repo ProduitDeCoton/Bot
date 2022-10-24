@@ -9,6 +9,21 @@ import exceptions.WrongAuthRedirectUriException;
 
 public class NonCommandTest {
 
+    @Test
+    public void test_null() {
+        final String test = null;
+
+        try {
+            final String code = NonCommand.getCode(test);
+            Assert.assertNull(code);
+
+        } catch (WrongAuthRedirectUriException e) {
+
+        } catch (Exception e) {
+            Assert.fail();
+        }
+    }
+
     /**
      * Пустая строка
      */
