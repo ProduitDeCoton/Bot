@@ -14,7 +14,7 @@ public class NonCommandTest {
         final String uriBase = System.getenv(evUriBase);
 
         if (uriBase == null || uriBase.length() == 0) {
-            Assert.fail("Переменная среды " + evUriBase + " не задана или её длина равна нулю.");
+            Assert.fail("Переменная среды " + evUriBase + " не задана, или переменная хранит пустую строку.");
         }
     }
 
