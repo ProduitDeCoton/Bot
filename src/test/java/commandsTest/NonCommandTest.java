@@ -21,7 +21,6 @@ public class NonCommandTest {
             Assert.assertNull(code);
 
         } catch (WrongAuthRedirectUriException e) {
-            Assert.assertTrue(true);
 
         } catch (Exception e) {
             Assert.fail();
@@ -40,10 +39,9 @@ public class NonCommandTest {
             Assert.assertNull(code);
 
         } catch (WrongAuthRedirectUriException e) {
-            Assert.assertTrue(true);
 
         } catch (Exception e) {
-            Assert.assertTrue(false);
+            Assert.fail();
         }
     }
 
@@ -59,7 +57,6 @@ public class NonCommandTest {
             Assert.assertNull(code);
 
         } catch (WrongAuthRedirectUriException e) {
-            Assert.assertTrue(true);
 
         } catch (Exception e) {
             Assert.assertTrue(false);
