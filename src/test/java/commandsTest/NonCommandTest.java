@@ -89,7 +89,7 @@ public class NonCommandTest {
         } catch (WrongAuthRedirectUriException e) {
 
         } catch (Exception e) {
-            Assert.assertTrue(false);
+            Assert.fail();
         }
     }
 
