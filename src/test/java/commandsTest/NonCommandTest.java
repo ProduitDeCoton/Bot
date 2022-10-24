@@ -42,6 +42,21 @@ public class NonCommandTest {
         }
     }
 
+    @Test
+    public void test_uri_without_code() {
+        final String uri = System.getenv("SPOTIFY_REDIRECT_URI");
+
+        try {
+            final String code = NonCommand.getCode(uri);
+            Assert.assertNull(code);
+
+        } catch (WrongAuthRedirectUriException e) {
+
+        } catch (Exception e) {
+            Assert.fail();
+        }
+    }
+
     /**
      * Непустой корректный URI, но пустое значение у ключа code
      */
