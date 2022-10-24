@@ -42,6 +42,9 @@ public class NonCommandTest {
         }
     }
 
+    /**
+     * Правильная основа URI, параметры отсутствуют
+     */
     @Test
     public void test_uri_without_code() {
         final String uri = System.getenv("SPOTIFY_REDIRECT_URI");
