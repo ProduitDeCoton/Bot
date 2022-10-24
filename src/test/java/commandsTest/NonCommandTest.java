@@ -11,10 +11,10 @@ public class NonCommandTest {
 
     @Test
     public void test_null() {
-        final String test = null;
+        final String uri = null;
 
         try {
-            final String code = NonCommand.getCode(test);
+            final String code = NonCommand.getCode(uri);
             Assert.assertNull(code);
 
         } catch (WrongAuthRedirectUriException e) {
@@ -29,10 +29,10 @@ public class NonCommandTest {
      */
     @Test
     public void test_empty() {
-        final String test = "";
+        final String uri = "";
 
         try {
-            final String code = NonCommand.getCode(test);
+            final String code = NonCommand.getCode(uri);
             Assert.assertNull(code);
 
         } catch (WrongAuthRedirectUriException e) {
@@ -47,10 +47,10 @@ public class NonCommandTest {
      */
     @Test
     public void test_empty_code() {
-        final String test = System.getenv("SPOTIFY_REDIRECT_URI") + "?code=";
+        final String uri = System.getenv("SPOTIFY_REDIRECT_URI") + "?code=";
 
         try {
-            final String code = NonCommand.getCode(test);
+            final String code = NonCommand.getCode(uri);
             Assert.assertNull(code);
 
         } catch (WrongAuthRedirectUriException e) {
@@ -65,10 +65,10 @@ public class NonCommandTest {
      */
     @Test
     public void test_wrong_uri() {
-        final String test = "test";
+        final String uri = "test";
 
         try {
-            final String code = NonCommand.getCode(test);
+            final String code = NonCommand.getCode(uri);
             Assert.assertNull(code);
 
         } catch (WrongAuthRedirectUriException e) {
@@ -83,10 +83,10 @@ public class NonCommandTest {
      */
     @Test
     public void test_correct_uri() {
-        final String test = System.getenv("SPOTIFY_REDIRECT_URI") + "?code=" + "bb82338c_0ffe6666_f4f419fd";
+        final String uri = System.getenv("SPOTIFY_REDIRECT_URI") + "?code=" + "bb82338c_0ffe6666_f4f419fd";
 
         try {
-            final String code = NonCommand.getCode(test);
+            final String code = NonCommand.getCode(uri);
             Assert.assertEquals("bb82338c_0ffe6666_f4f419fd", code);
 
         } catch (Exception e) {
@@ -99,10 +99,10 @@ public class NonCommandTest {
      */
     @Test
     public void test_correct_uri_option() {
-        final String test = System.getenv("SPOTIFY_REDIRECT_URI") + "?code=" + "bb82338c_0ffe6666_f4f419fd&option=null";
+        final String uri = System.getenv("SPOTIFY_REDIRECT_URI") + "?code=" + "bb82338c_0ffe6666_f4f419fd&option=null";
 
         try {
-            final String code = NonCommand.getCode(test);
+            final String code = NonCommand.getCode(uri);
             Assert.assertEquals("bb82338c_0ffe6666_f4f419fd", code);
 
         } catch (Exception e) {
@@ -116,10 +116,10 @@ public class NonCommandTest {
      */
     @Test
     public void test_sub_delim() {
-        final String test = System.getenv("SPOTIFY_REDIRECT_URI") + "?code=" + "bb8233&8c_0ffe6666_f4f419fd";
+        final String uri = System.getenv("SPOTIFY_REDIRECT_URI") + "?code=" + "bb8233&8c_0ffe6666_f4f419fd";
 
         try {
-            final String code = NonCommand.getCode(test);
+            final String code = NonCommand.getCode(uri);
             Assert.assertEquals("bb8233", code);
 
         } catch (Exception e) {
@@ -133,10 +133,10 @@ public class NonCommandTest {
      */
     @Test
     public void test_gen_delim() {
-        final String test = System.getenv("SPOTIFY_REDIRECT_URI") + "?code=" + "bb@82338c_0ffe6666_f4f4@19fd";
+        final String uri = System.getenv("SPOTIFY_REDIRECT_URI") + "?code=" + "bb@82338c_0ffe6666_f4f4@19fd";
 
         try {
-            final String code = NonCommand.getCode(test);
+            final String code = NonCommand.getCode(uri);
             Assert.assertEquals("bb", code);
 
         } catch (Exception e) {
