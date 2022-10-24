@@ -9,6 +9,11 @@ import spotify.models.authorization.AuthorizationCodeFlowTokenResponse;
 
 import java.util.Arrays;
 
+/**
+ * Класс, создающий сессию Spotify Web API. Позволяет осуществлять
+ * авторизацию методом Authorization Code Flow и обновлять токены,
+ * ипользуя clientId и clientSecret.
+ */
 public class SpotifySession {
     private final static String clientId = System.getenv("SPOTIFY_CLIENT_ID");
     private final static String clientSecret = System.getenv("SPOTIFY_CLIENT_SECRET");
@@ -22,6 +27,10 @@ public class SpotifySession {
         this.code = code;
     }
 
+    /**
+     * Создание редирект-ссылки с заданными разрешениями
+     * @return redirect url
+     */
     public String buildAuthorizationCodeFlow() {
         AuthorizationCodeFlow authorizationCodeFlow = new AuthorizationCodeFlow.Builder()
                 .setClientId(clientId)
@@ -35,6 +44,10 @@ public class SpotifySession {
         return authorizationCodeFlow.constructUrl();
     }
 
+    /**
+     * Получение AccessToken на 1 час по коду, полученному
+     * по переходу по редирект-ссылке
+     */
     public void buildAuthorizationRequestToken() {
         AuthorizationRequestToken authorizationRequestToken = new AuthorizationRequestToken();
         token = authorizationRequestToken
@@ -45,10 +58,18 @@ public class SpotifySession {
                         redirectUri);
     }
 
+    /**
+     * Создание SpotifyApi для конкретного пользователя по
+     * его токену.
+     */
     public void buildSpotifyApi() {
         spotifyApi = new SpotifyApi(token.getAccessToken());
     }
 
+    /**
+     * Обновление истёкшего токена, используя
+     * clientSecret и refreshToken
+     */
     public void buildAuthorizationRefreshToken() {
         AuthorizationRefreshToken authorizationRefreshToken = new AuthorizationRefreshToken();
         token = authorizationRefreshToken.refreshAccessToken(
