@@ -32,7 +32,7 @@ public class NonCommandTest {
      */
     @Test
     public void test_empty_code() {
-        final String test = System.getenv("SPOTIFY_REDIRECT_URI");
+        final String test = System.getenv("SPOTIFY_REDIRECT_URI") + "?code=";
 
         try {
             final String code = NonCommand.getCode(test);
