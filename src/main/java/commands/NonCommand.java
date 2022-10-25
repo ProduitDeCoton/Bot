@@ -21,6 +21,11 @@ public class NonCommand {
      * @throws WrongAuthRedirectUriException строка не соответствует шаблону аутентификационного сообщения
      */
     public static String getCode(String authRedirectUri) throws WrongAuthRedirectUriException {
+
+        if (authRedirectUri == null) {
+            throw new WrongAuthRedirectUriException();
+        }
+
         final Pattern pattern = Pattern.compile(System.getenv("SPOTIFY_REDIRECT_URI") + "\\?code=([-_A-Za-z0-9]+)");
         final Matcher matcher = pattern.matcher(authRedirectUri);
 
