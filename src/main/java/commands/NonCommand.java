@@ -19,7 +19,7 @@ public class NonCommand {
      */
     public static String getCode(String authRedirectUri) throws WrongAuthRedirectUriException {
 
-        if (authRedirectUri == null) {
+        if (authRedirectUri.isBlank()) {
             throw new WrongAuthRedirectUriException();
         }
 
@@ -28,7 +28,7 @@ public class NonCommand {
         final String defaultUriBase = "http://localhost:8080/auth/spotify/redirect";
         final String evUriBase = System.getenv("SPOTIFY_REDIRECT_URI");
 
-        if (evUriBase == null || evUriBase.isEmpty()) {
+        if (evUriBase == null || evUriBase.isBlank()) {
             uriBase = defaultUriBase;
         }
 
