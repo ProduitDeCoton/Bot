@@ -14,7 +14,7 @@ public class NonCommandTest {
     public NonCommandTest() {
         final String evUriBase = System.getenv("SPOTIFY_REDIRECT_URI");
 
-        if (evUriBase == null || evUriBase.length() == 0) {
+        if (evUriBase == null || evUriBase.isEmpty()) {
             uriBase = defaultUriBase;
             return;
         }

@@ -28,7 +28,7 @@ public class NonCommand {
         final String defaultUriBase = "http://localhost:8080/auth/spotify/redirect";
         final String evUriBase = System.getenv("SPOTIFY_REDIRECT_URI");
 
-        if (evUriBase == null || evUriBase.length() == 0) {
+        if (evUriBase == null || evUriBase.isEmpty()) {
             uriBase = defaultUriBase;
         }
 
