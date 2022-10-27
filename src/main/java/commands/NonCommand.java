@@ -36,10 +36,14 @@ public class NonCommand {
             uriBase = evUriBase;
         }
 
-        final Pattern pattern = Pattern.compile(uriBase + "\\?code=([-_A-Za-z0-9]+)");
+        final Pattern pattern = Pattern.compile(uriBase + "\\?code=([-\\w]+)|[-\\w]+=[-\\w]+&code=([-\\w]+)");
         final Matcher matcher = pattern.matcher(authRedirectUri);
 
         if (matcher.find()) {
+            if (matcher.group(1) == null) {
+                return matcher.group(2);
+            }
+
             return matcher.group(1);
         }
 
