@@ -13,7 +13,6 @@ import java.util.regex.Pattern;
 import java.util.regex.Matcher;
 
 public class NonCommand {
-
     /**
      * @param authRedirectUri сообщение, вероятно содержащее аутентификационный код
      * @throws WrongAuthRedirectUriException строка не соответствует шаблону аутентификационного сообщения
@@ -24,7 +23,20 @@ public class NonCommand {
             throw new WrongAuthRedirectUriException();
         }
 
-        final Pattern pattern = Pattern.compile(System.getenv("SPOTIFY_REDIRECT_URI") + "\\?code=([-_A-Za-z0-9]+)");
+        String uriBase;
+
+        final String defaultUriBase = "http://localhost:8080/auth/spotify/redirect";
+        final String evUriBase = System.getenv("SPOTIFY_REDIRECT_URI");
+
+        if (evUriBase == null || evUriBase.length() == 0) {
+            uriBase = defaultUriBase;
+        }
+
+        else {
+            uriBase = evUriBase;
+        }
+
+        final Pattern pattern = Pattern.compile(uriBase + "\\?code=([-_A-Za-z0-9]+)");
         final Matcher matcher = pattern.matcher(authRedirectUri);
 
         if (matcher.find()) {
