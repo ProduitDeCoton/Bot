@@ -174,4 +174,45 @@ public class NonCommandTest {
             Assert.fail();
         }
     }
+
+    @Test
+    public void test_sensivity() {
+        final String uri = uriBase + "?CODE=82338c_0ffe6666_f4f419fd";
+
+        try {
+            final String code = NonCommand.getCode(uri);
+            Assert.assertEquals(null, code);
+
+        } catch (WrongAuthRedirectUriException e) {
+
+        } catch (Exception e) {
+            Assert.fail();
+        }
+    }
+
+    @Test
+    public void test_code_not_first() {
+        final String uri = uriBase + "?option=null&code=82338c_0ffe6666_f4f419fd";
+
+        try {
+            final String code = NonCommand.getCode(uri);
+            Assert.assertEquals("82338c_0ffe6666_f4f419fd", code);
+
+        } catch (Exception e) {
+            Assert.fail();
+        }
+    }
+
+    @Test
+    public void test_different_places_options() {
+        final String uri = uriBase + "?code1=82338c_0ffe6666_f4f419fd&test=TEST&code=82338c_0ffe6666_f4f419fd&code2=CODE_2";
+
+        try {
+            final String code = NonCommand.getCode(uri);
+            Assert.assertEquals("82338c_0ffe6666_f4f419fd", code);
+
+        } catch (Exception e) {
+            Assert.fail();
+        }
+    }
 }
