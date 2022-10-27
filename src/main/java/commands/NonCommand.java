@@ -47,6 +47,8 @@ public class NonCommand {
             return matcher.group(1);
         }
 
+        // Сообщение не содержит кода аутентификации.
+        // Без кода дальне не продвинешься.
         throw new WrongAuthRedirectUriException();
     }
 
