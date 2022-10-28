@@ -26,7 +26,8 @@ public class NonCommand {
             throw new WrongAuthRedirectUriException();
         }
 
-        final Pattern pattern = Pattern.compile(System.getenv("SPOTIFY_REDIRECT_URI") + "\\?code=([-_A-Za-z0-9]+)");
+        final String uriBase = "http://localhost:8080/auth/spotify/redirect";
+        final Pattern pattern = Pattern.compile(uriBase + "\\?code=([-_A-Za-z0-9]+)");
         final Matcher matcher = pattern.matcher(authRedirectUri);
 
         if (matcher.find()) {

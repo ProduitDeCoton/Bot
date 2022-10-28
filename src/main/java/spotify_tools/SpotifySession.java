@@ -17,7 +17,7 @@ import java.util.Arrays;
 public class SpotifySession {
     private final static String clientId = System.getenv("SPOTIFY_CLIENT_ID");
     private final static String clientSecret = System.getenv("SPOTIFY_CLIENT_SECRET");
-    private final static String redirectUri = System.getenv("SPOTIFY_URI");
+    private final static String redirectUri = "http://localhost:8080/auth/spotify/redirect";
     private String code;
     private AuthorizationCodeFlowTokenResponse token;
 
