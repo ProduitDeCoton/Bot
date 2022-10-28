@@ -15,8 +15,8 @@ public class NonCommandTest {
         final String uri = null;
 
         try {
-            final String code = NonCommand.getCode(uri);
-            Assert.assertNull(code);
+            NonCommand.getCode(uri);
+            Assert.fail();
 
         } catch (WrongAuthRedirectUriException e) {
 
@@ -33,8 +33,8 @@ public class NonCommandTest {
         final String uri = "";
 
         try {
-            final String code = NonCommand.getCode(uri);
-            Assert.assertNull(code);
+            NonCommand.getCode(uri);
+            Assert.fail();
 
         } catch (WrongAuthRedirectUriException e) {
 
@@ -51,8 +51,8 @@ public class NonCommandTest {
         final String uri = uriBase;
 
         try {
-            final String code = NonCommand.getCode(uri);
-            Assert.assertNull(code);
+            NonCommand.getCode(uri);
+            Assert.fail();
 
         } catch (WrongAuthRedirectUriException e) {
 
@@ -69,8 +69,8 @@ public class NonCommandTest {
         final String uri = uriBase + "?code=";
 
         try {
-            final String code = NonCommand.getCode(uri);
-            Assert.assertNull(code);
+            NonCommand.getCode(uri);
+            Assert.fail();
 
         } catch (WrongAuthRedirectUriException e) {
 
@@ -87,8 +87,8 @@ public class NonCommandTest {
         final String uri = "test";
 
         try {
-            final String code = NonCommand.getCode(uri);
-            Assert.assertNull(code);
+            NonCommand.getCode(uri);
+            Assert.fail();
 
         } catch (WrongAuthRedirectUriException e) {
 
