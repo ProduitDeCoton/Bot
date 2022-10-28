@@ -8,23 +8,15 @@ import commands.NonCommand;
 import exceptions.WrongAuthRedirectUriException;
 
 public class NonCommandTest {
-    @Test
-    public void env_var_uri_base_test() {
-        final String evUriBase = "SPOTIFY_REDIRECT_URI";
-        final String uriBase = System.getenv(evUriBase);
-
-        if (uriBase == null || uriBase.length() == 0) {
-            Assert.fail("Переменная среды " + evUriBase + " не задана, или переменная хранит пустую строку.");
-        }
-    }
+    final String uriBase = "http://localhost:8080/auth/spotify/redirect";
 
     @Test
     public void test_null() {
         final String uri = null;
 
         try {
-            final String code = NonCommand.getCode(uri);
-            Assert.assertNull(code);
+            NonCommand.getCode(uri);
+            Assert.fail();
 
         } catch (WrongAuthRedirectUriException e) {
 
@@ -41,8 +33,8 @@ public class NonCommandTest {
         final String uri = "";
 
         try {
-            final String code = NonCommand.getCode(uri);
-            Assert.assertNull(code);
+            NonCommand.getCode(uri);
+            Assert.fail();
 
         } catch (WrongAuthRedirectUriException e) {
 
@@ -56,11 +48,11 @@ public class NonCommandTest {
      */
     @Test
     public void test_uri_without_code() {
-        final String uri = System.getenv("SPOTIFY_REDIRECT_URI");
+        final String uri = uriBase;
 
         try {
-            final String code = NonCommand.getCode(uri);
-            Assert.assertNull(code);
+            NonCommand.getCode(uri);
+            Assert.fail();
 
         } catch (WrongAuthRedirectUriException e) {
 
@@ -74,11 +66,11 @@ public class NonCommandTest {
      */
     @Test
     public void test_empty_code() {
-        final String uri = System.getenv("SPOTIFY_REDIRECT_URI") + "?code=";
+        final String uri = uriBase + "?code=";
 
         try {
-            final String code = NonCommand.getCode(uri);
-            Assert.assertNull(code);
+            NonCommand.getCode(uri);
+            Assert.fail();
 
         } catch (WrongAuthRedirectUriException e) {
 
@@ -95,8 +87,8 @@ public class NonCommandTest {
         final String uri = "test";
 
         try {
-            final String code = NonCommand.getCode(uri);
-            Assert.assertNull(code);
+            NonCommand.getCode(uri);
+            Assert.fail();
 
         } catch (WrongAuthRedirectUriException e) {
 
@@ -110,7 +102,7 @@ public class NonCommandTest {
      */
     @Test
     public void test_correct_uri() {
-        final String uri = System.getenv("SPOTIFY_REDIRECT_URI") + "?code=" + "bb82338c_0ffe6666_f4f419fd";
+        final String uri = uriBase + "?code=" + "bb82338c_0ffe6666_f4f419fd";
 
         try {
             final String code = NonCommand.getCode(uri);
@@ -126,7 +118,7 @@ public class NonCommandTest {
      */
     @Test
     public void test_correct_uri_option() {
-        final String uri = System.getenv("SPOTIFY_REDIRECT_URI") + "?code=" + "bb82338c_0ffe6666_f4f419fd&option=null";
+        final String uri = uriBase + "?code=" + "bb82338c_0ffe6666_f4f419fd&option=null";
 
         try {
             final String code = NonCommand.getCode(uri);
@@ -143,7 +135,7 @@ public class NonCommandTest {
      */
     @Test
     public void test_sub_delim() {
-        final String uri = System.getenv("SPOTIFY_REDIRECT_URI") + "?code=" + "bb8233&8c_0ffe6666_f4f419fd";
+        final String uri = uriBase + "?code=" + "bb8233&8c_0ffe6666_f4f419fd";
 
         try {
             final String code = NonCommand.getCode(uri);
@@ -160,7 +152,7 @@ public class NonCommandTest {
      */
     @Test
     public void test_gen_delim() {
-        final String uri = System.getenv("SPOTIFY_REDIRECT_URI") + "?code=" + "bb@82338c_0ffe6666_f4f4@19fd";
+        final String uri = uriBase + "?code=" + "bb@82338c_0ffe6666_f4f4@19fd";
 
         try {
             final String code = NonCommand.getCode(uri);
