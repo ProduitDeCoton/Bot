@@ -44,6 +44,10 @@ public class SpotifySession {
         return authorizationCodeFlow.constructUrl();
     }
 
+    public int getTokenExpiresIn() {
+        return token.getExpiresIn();
+    }
+
     /**
      * Получение AccessToken на 1 час по коду, полученному
      * по переходу по редирект-ссылке
