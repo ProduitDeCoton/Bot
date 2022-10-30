@@ -5,16 +5,20 @@ import commands.HelpCommand;
 import commands.NonCommand;
 import commands.StartCommand;
 import inline_query_commands.GetCurrentPlayingObject;
+import inline_query_commands.GetLikedSongsPlaylist;
 import org.telegram.telegrambots.extensions.bots.commandbot.TelegramLongPollingCommandBot;
 import org.telegram.telegrambots.meta.api.methods.AnswerInlineQuery;
 import org.telegram.telegrambots.meta.api.methods.send.SendMessage;
 import org.telegram.telegrambots.meta.api.objects.Message;
 import org.telegram.telegrambots.meta.api.objects.Update;
 import org.telegram.telegrambots.meta.api.objects.User;
+import org.telegram.telegrambots.meta.api.objects.inlinequery.inputmessagecontent.InputTextMessageContent;
 import org.telegram.telegrambots.meta.api.objects.inlinequery.result.InlineQueryResult;
+import org.telegram.telegrambots.meta.api.objects.inlinequery.result.InlineQueryResultArticle;
 import org.telegram.telegrambots.meta.exceptions.TelegramApiException;
 
 import java.util.ArrayList;
+
 
 
 public final class BotLogic extends TelegramLongPollingCommandBot {
@@ -46,16 +50,33 @@ public final class BotLogic extends TelegramLongPollingCommandBot {
     /**
      * Ответ на запрос, не являющийся командой
      */
+
+    public void getInlineQueryResult(Update update){
+
+    }
     @Override
     public void processNonCommandUpdate(Update update) {
         if (update.hasInlineQuery()) {
             ArrayList<InlineQueryResult> inlineQueryResults = new ArrayList<>();
+            if (update.getInlineQuery().getQuery().contains("now")){
+                inlineQueryResults.clear();
+                inlineQueryResults.add(new GetCurrentPlayingObject().constructInlineQueryResult(update.getInlineQuery().getFrom(),
+                        "Текущий воспроизводимый трек"));
+            } else if (update.getInlineQuery().getQuery().contains("like")) {
+                inlineQueryResults.clear();
+                inlineQueryResults.add(new GetLikedSongsPlaylist().constructInlineQueryResult(update.getInlineQuery().getFrom(),
+                        "Ваши сохранённые треки"));
+            } else {
+                InputTextMessageContent message = new InputTextMessageContent();
+                message.setMessageText("Wrong Command");
+                inlineQueryResults.clear();
+                inlineQueryResults.add(new InlineQueryResultArticle("Wrong Query", "Test", message));
+            }
             // Добавлять объекты с результатами ниже
-            inlineQueryResults.add(new GetCurrentPlayingObject().constructInlineQueryResult(update.getInlineQuery().getFrom(),
-                    "Текущий воспроизводимый трек"));
 
             AnswerInlineQuery answerInlineQuery = AnswerInlineQuery.builder()
                     .inlineQueryId(update.getInlineQuery().getId())
+                    .cacheTime(2)
                     .results(inlineQueryResults)
                     .isPersonal(true)
                     .build();
