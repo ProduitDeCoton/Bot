@@ -33,11 +33,13 @@ public class GetCurrentPlayingObject extends InlineQueryCommand {
 
 
     private String getCurrentPlayingTrackName(CurrentlyPlayingObject object) {
+        if (object == null) return null;
         return object.getItem().getName();
     }
 
 
     private String getCurrentPlayingTrackLink(CurrentlyPlayingObject object) {
+        if (object == null) return null;
         String link = object.getItem().getExternalUrls().getSpotify();
         return "[Трек](" + link + ")";
     }
@@ -45,6 +47,7 @@ public class GetCurrentPlayingObject extends InlineQueryCommand {
 
     private String getCurrentPlayingAlbumLink(CurrentlyPlayingObject object, User user) {
         SpotifySession spotifySession = ActiveUsers.getSession(user);
+        if (spotifySession == null || object == null) return null;
         var trackId = object.getItem().getId();
         Map<String, String> properties = new HashMap<>();
         var link = spotifySession.spotifyApi.getTrack(trackId, properties).getAlbum().getExternalUrls().getSpotify();
@@ -55,6 +58,7 @@ public class GetCurrentPlayingObject extends InlineQueryCommand {
 
     private String getCurrentPlayingArtistName(CurrentlyPlayingObject track, User user) {
         SpotifySession spotifySession = ActiveUsers.getSession(user);
+        if (spotifySession == null || track == null) return null;
         var trackId = track.getItem().getId();
         Map<String, String> properties = new HashMap<>();
         var artistsList = spotifySession.spotifyApi.getTrack(trackId, properties).getArtists();
