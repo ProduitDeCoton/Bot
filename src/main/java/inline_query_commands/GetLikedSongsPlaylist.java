@@ -94,7 +94,7 @@ public class GetLikedSongsPlaylist extends InlineQueryCommand {
     }
 
     private void addPlaylistTracks(final String playlistId, final String playlistSnapshotId, final SpotifySession session) {
-        Map<String, String> getSavedTracksProperties = new HashMap<>();
+        final Map<String, String> getSavedTracksProperties = new HashMap<>();
         getSavedTracksProperties.put("limit", "50");
         getSavedTracksProperties.put("offset", "0");
 
@@ -104,9 +104,8 @@ public class GetLikedSongsPlaylist extends InlineQueryCommand {
         for (int offset = 0; offset < session.spotifyApi.getSavedTracks(getSavedTracksProperties).getTotal(); offset += 50) {
 
             getSavedTracksProperties.put("offset", String.valueOf(offset));
-            var savedTracks = session.spotifyApi.getSavedTracks(getSavedTracksProperties).getItems();
-
-            List<String> savedTracksUris = new ArrayList<>();
+            final var savedTracks = session.spotifyApi.getSavedTracks(getSavedTracksProperties).getItems();
+            final var savedTracksUris = new ArrayList<String>();
 
             for (var track : savedTracks) {
                 if (count >= 1000) {
