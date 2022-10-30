@@ -76,28 +76,28 @@ public class GetLikedSongsPlaylist extends InlineQueryCommand {
     private void deletePlaylistTracks(final String playlistId, final String playlistSnapshotId, final SpotifySession session) {
         final Map<String, String> getPlaylistTracksProperties = Map.ofEntries(entry("limit", "100"));
 
-        int pos = 0;
+        int trackPosition = 0;
         Paging<PlaylistTrack> playlistTracks = null;
-        boolean exit = false;
+        boolean stopDelete = false;
 
         do {
             playlistTracks = session.spotifyApi.getPlaylistTracks(playlistId, getPlaylistTracksProperties);
 
             if (playlistTracks.getTotal() <= Integer.valueOf(getPlaylistTracksProperties.get("limit"))) {
-                exit = true;
+                stopDelete = true;
             }
 
             var deleteTracks = new ArrayList<PlaylistItem>();
 
             for (var track : playlistTracks.getItems()) {
-                deleteTracks.add(new PlaylistItem(track.getTrack().getUri(), new int[]{pos}));
-                pos++;
+                deleteTracks.add(new PlaylistItem(track.getTrack().getUri(), new int[]{trackPosition}));
+                trackPosition++;
             }
 
             DeleteItemsPlaylistRequestBody deleteItemsPlaylistRequestBody = new DeleteItemsPlaylistRequestBody(deleteTracks, playlistSnapshotId);
             session.spotifyApi.deleteItemsFromPlaylist(playlistId, deleteItemsPlaylistRequestBody);
 
-        } while (!exit);
+        } while (!stopDelete);
     }
 
     private void addPlaylistTracks(final String playlistId, final String playlistSnapshotId, final SpotifySession session) {
@@ -105,8 +105,8 @@ public class GetLikedSongsPlaylist extends InlineQueryCommand {
         getSavedTracksProperties.put("limit", "50");
         getSavedTracksProperties.put("offset", "0");
 
-        int count = 0;
-        boolean exit = false;
+        int trackCount = 0;
+        boolean overLimit = false;
 
         for (int offset = 0; offset < session.spotifyApi.getSavedTracks(getSavedTracksProperties).getTotal(); offset += 50) {
 
@@ -115,16 +115,16 @@ public class GetLikedSongsPlaylist extends InlineQueryCommand {
             final var savedTracksUris = new ArrayList<String>();
 
             for (var track : savedTracks) {
-                if (count >= 1000) {
-                    exit = true;
+                if (trackCount >= 1000) {
+                    overLimit = true;
                     break;
                 }
 
-                count++;
+                trackCount++;
                 savedTracksUris.add(track.getTrack().getUri());
             }
 
-            if (exit) {
+            if (overLimit) {
                 break;
             }
 
