@@ -27,7 +27,8 @@ public class AuthCommand extends ServiceCommand {
             session = ActiveUsers.getSession(user);
         }
 
-        String redirectLink = session.buildAuthorizationCodeFlow().replace("_", "\\_");
+        String redirectLink = session.buildAuthorizationCodeFlow();
+                //.replace("_", "\\_");
 
         String userName = (user.getUserName() != null) ? user.getUserName() :
                 String.format("%s %s", user.getLastName(), user.getFirstName());
@@ -35,7 +36,7 @@ public class AuthCommand extends ServiceCommand {
         userName = userName.replace("_", "\\_");
         sendAnswer(absSender, chat.getId(), this.getCommandIdentifier(), userName,
                 userName + ", пожалуйста, пройдите по ссылке ниже. Пройдите аутентификацию и предоставьте " +
-                        "разрешения для работы бота." + "\n" + "\n" + redirectLink + "\n" + "\n" +
+                        "разрешения для работы бота." + "\n" + "\n" + "[Пройти авторизацию]" + "(" + redirectLink + ")" + "\n" + "\n" +
                         "После аутентификации в адресной строке появится ссылка с кодом. Отправьте, пожалуйста, " +
                         "всю ссылку целиком.");
     }
