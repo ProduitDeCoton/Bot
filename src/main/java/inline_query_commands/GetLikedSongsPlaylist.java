@@ -90,7 +90,6 @@ public class GetLikedSongsPlaylist extends InlineQueryCommand {
             var deleteTracks = new ArrayList<PlaylistItem>();
 
             for (var track : playlistTracks.getItems()) {
-                System.out.println(track.getTrack().getName());
                 deleteTracks.add(new PlaylistItem(track.getTrack().getUri(), new int[]{pos}));
                 pos++;
             }
