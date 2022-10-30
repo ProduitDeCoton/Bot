@@ -19,6 +19,10 @@ import java.util.Map;
 
 import static java.util.Map.entry;
 
+/**
+ * Формирование актуального плейлиста понравившихся песен.
+ * Плейлист сохраняется в библиотеке под именем BOT_NAME PLAYLIST
+ */
 public class GetLikedSongsPlaylist extends InlineQueryCommand {
 
     private String getBotPlaylistName() {
@@ -59,8 +63,12 @@ public class GetLikedSongsPlaylist extends InlineQueryCommand {
     }
 
     private void createBotPlayList(final SpotifySession session) {
-        CreateUpdatePlaylistRequestBody body;
-        body = new CreateUpdatePlaylistRequestBody(getBotPlaylistName(), "Плейлист генерируется автоматически и включает в себя первые 1000 сохранённых песен. Во избежание ошибок не меняйте его содержимое самостоятельно", true, false);
+        final CreateUpdatePlaylistRequestBody body = new CreateUpdatePlaylistRequestBody(
+                getBotPlaylistName(),
+                "Плейлист генерируется автоматически и включает в себя " +
+                        "первые 1000 сохранённых песен. Во избежание ошибок не меняйте его " +
+                        "содержимое самостоятельно",
+                true, false);
 
         session.spotifyApi.createPlaylist(session.spotifyApi.getCurrentUser().getId(), body);
     }
