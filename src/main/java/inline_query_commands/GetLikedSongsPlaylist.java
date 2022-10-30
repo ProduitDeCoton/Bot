@@ -94,7 +94,7 @@ public class GetLikedSongsPlaylist extends InlineQueryCommand {
                 trackPosition++;
             }
 
-            DeleteItemsPlaylistRequestBody deleteItemsPlaylistRequestBody = new DeleteItemsPlaylistRequestBody(deleteTracks, playlistSnapshotId);
+            final var deleteItemsPlaylistRequestBody = new DeleteItemsPlaylistRequestBody(deleteTracks, playlistSnapshotId);
             session.spotifyApi.deleteItemsFromPlaylist(playlistId, deleteItemsPlaylistRequestBody);
 
         } while (!stopDelete);
