@@ -22,7 +22,7 @@ import static java.util.Map.entry;
 public class GetLikedSongsPlaylist extends InlineQueryCommand {
 
     private String getBotPlaylistName() {
-        return "@spotify_now_bot PLAYLIST";
+        return "%s PLAYLIST".formatted(System.getenv("BOT_NAME"));
     }
 
     private boolean botPlaylistExist(final SpotifySession session) {
