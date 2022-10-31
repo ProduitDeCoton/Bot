@@ -51,9 +51,7 @@ public final class BotLogic extends TelegramLongPollingCommandBot {
      * Ответ на запрос, не являющийся командой
      */
 
-    public void getInlineQueryResult(Update update){
-
-    }
+   
     @Override
     public void processNonCommandUpdate(Update update) {
         if (update.hasInlineQuery()) {
