@@ -12,8 +12,18 @@ import spotify_tools.SpotifySession;
 import java.util.HashMap;
 import java.util.Map;
 
+/**
+ * Inline-команда, позволяющая посмотреть текущий
+ * воспроизводимый трек
+ */
 public class GetCurrentPlayingObject extends InlineQueryCommand {
 
+    /**
+     * Возвращает объект "текущий воспроизводимый трек".
+     * Возвращает null, если сессия не задана.
+     * @param user
+     * @return CurrentlyPlayingObject
+     */
     private CurrentlyPlayingObject getCurrentPlayingObject(User user) {
         SpotifySession spotifySession = ActiveUsers.getSession(user);
         if (spotifySession == null) return null;
@@ -31,20 +41,40 @@ public class GetCurrentPlayingObject extends InlineQueryCommand {
         }
     }
 
-
+    /**
+     * Возвращает строку с названием трека.
+     * Возвращает null, если трек есть null
+     * @param object
+     * @return String
+     */
     private String getCurrentPlayingTrackName(CurrentlyPlayingObject object) {
+        if (object == null) return null;
         return object.getItem().getName();
     }
 
-
+    /**
+     * Возвращает ссылку на трек.
+     * Возвращает null, если трек есть null
+     * @param object
+     * @return String
+     */
     private String getCurrentPlayingTrackLink(CurrentlyPlayingObject object) {
+        if (object == null) return null;
         String link = object.getItem().getExternalUrls().getSpotify();
         return "[Трек](" + link + ")";
     }
 
-
+    /**
+     * Возвращает ссылку на альбом, в котором находится трек.
+     * Возвращает null, если не задана сессия в Spotify
+     * или если трек есть null
+     * @param object
+     * @param user
+     * @return String
+     */
     private String getCurrentPlayingAlbumLink(CurrentlyPlayingObject object, User user) {
         SpotifySession spotifySession = ActiveUsers.getSession(user);
+        if (spotifySession == null || object == null) return null;
         var trackId = object.getItem().getId();
         Map<String, String> properties = new HashMap<>();
         var link = spotifySession.spotifyApi.getTrack(trackId, properties).getAlbum().getExternalUrls().getSpotify();
@@ -52,9 +82,17 @@ public class GetCurrentPlayingObject extends InlineQueryCommand {
         return "[Альбом](" + link + ")";
     }
 
-
+    /**
+     * Возвращает строку с именами всех исполнителей трека.
+     * Возвращает null, если не задана сессия в Spotify
+     * или трек есть null
+     * @param track
+     * @param user
+     * @return String
+     */
     private String getCurrentPlayingArtistName(CurrentlyPlayingObject track, User user) {
         SpotifySession spotifySession = ActiveUsers.getSession(user);
+        if (spotifySession == null || track == null) return null;
         var trackId = track.getItem().getId();
         Map<String, String> properties = new HashMap<>();
         var artistsList = spotifySession.spotifyApi.getTrack(trackId, properties).getArtists();
@@ -68,6 +106,13 @@ public class GetCurrentPlayingObject extends InlineQueryCommand {
         return artists.toString();
     }
 
+    /**
+     * Возвращает InlineQueryResultArticle, готовый к использованию в
+     * Inline-режиме. Содержит в себе информацию о текущем воспроизводимом треке.
+     * @param user
+     * @param showableInlineQueryText
+     * @return InlineQueryResultArticle
+     */
     @Override
     public InlineQueryResult constructInlineQueryResult(User user, String showableInlineQueryText) {
         CurrentlyPlayingObject currentlyPlayingObject = getCurrentPlayingObject(user);
