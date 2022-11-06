@@ -20,7 +20,8 @@ public class SpotifySession {
     private final static String redirectUri = "http://localhost:8080/auth/spotify/redirect";
     private AuthorizationCodeFlowTokenResponse token;
 
-    public SpotifyApi spotifyApi;
+    private SpotifyApi spotifyApi;
+
 
     public void authorizeByCode(String code) {
 
@@ -31,6 +32,8 @@ public class SpotifySession {
                         clientSecret,
                         code,
                         redirectUri);
+
+        spotifyApi = new SpotifyApi(token.getAccessToken());
     }
 
     /**
@@ -51,24 +54,21 @@ public class SpotifySession {
     }
 
     /**
-     * Создание SpotifyApi для конкретного пользователя по
-     * его токену.
-     */
-    public void buildSpotifyApi() {
-        spotifyApi = new SpotifyApi(token.getAccessToken());
-    }
-
-    /**
      * Обновление истёкшего токена, используя
      * clientSecret и refreshToken
      */
-    public void buildAuthorizationRefreshToken() {
+    public void authorizeByRefreshToken() {
         AuthorizationRefreshToken authorizationRefreshToken = new AuthorizationRefreshToken();
         token = authorizationRefreshToken.refreshAccessToken(
                 clientId,
                 clientSecret,
                 token.getRefreshToken()
         );
+
+        spotifyApi = new SpotifyApi(token.getAccessToken());
     }
 
+    public SpotifyApi getSpotifyApi() {
+        return spotifyApi;
+    }
 }

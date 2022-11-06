@@ -49,10 +49,9 @@ public class NonCommand {
             String code = getCode(text);
             SpotifySession session = ActiveUsers.getSession(user);
             session.authorizeByCode(code);
-            session.buildSpotifyApi();
 
             ActiveUsers.updateActiveUsers(user, session);
-            answer = session.spotifyApi.getCurrentUser().getDisplayName() + ", вы успешно авторизовались!";
+            answer = session.getSpotifyApi().getCurrentUser().getDisplayName() + ", вы успешно авторизовались!";
         } catch (WrongAuthRedirectUriException e) {
             answer = "Похоже, вы неправильно ввели ссылку, попробуйте ещё раз";
         } catch (SpotifyAuthorizationFailedException | SpotifyActionFailedException e) {
