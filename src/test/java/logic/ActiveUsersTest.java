@@ -3,7 +3,7 @@ package logic;
 import org.junit.Assert;
 import org.junit.Test;
 import org.telegram.telegrambots.meta.api.objects.User;
-import spotify_tools.SpotifySession;
+import spotifyTools.SpotifySession;
 
 public class ActiveUsersTest {
     @Test
