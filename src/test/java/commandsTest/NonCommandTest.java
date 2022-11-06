@@ -6,9 +6,20 @@ import org.junit.Test;
 
 import commands.NonCommand;
 import exceptions.WrongAuthRedirectUriException;
+import org.telegram.telegrambots.meta.api.objects.User;
 
 public class NonCommandTest {
     final String uriBase = "http://localhost:8080/auth/spotify/redirect";
+
+    @Test
+    public void checkWhenTextNull() {
+        NonCommand nonCommand = new NonCommand();
+        User user = new User(843L, "testFirstName", false);
+        String expectedAnswer = "Простите, я не понимаю Вас. Похоже, что Вы ввели сообщение, " +
+                "не соответствующее формату. Возможно, Вам поможет /help";
+
+        Assert.assertEquals(expectedAnswer, nonCommand.nonCommandExecute(user, null));
+    }
 
     @Test
     public void test_null() {
