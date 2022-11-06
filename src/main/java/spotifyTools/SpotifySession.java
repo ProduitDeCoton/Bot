@@ -1,4 +1,4 @@
-package spotify_tools;
+package spotifyTools;
 
 import spotify.api.authorization.AuthorizationCodeFlow;
 import spotify.api.authorization.AuthorizationRefreshToken;
@@ -18,13 +18,19 @@ public class SpotifySession {
     private final static String clientId = System.getenv("SPOTIFY_CLIENT_ID");
     private final static String clientSecret = System.getenv("SPOTIFY_CLIENT_SECRET");
     private final static String redirectUri = "http://localhost:8080/auth/spotify/redirect";
-    private String code;
     private AuthorizationCodeFlowTokenResponse token;
 
     public SpotifyApi spotifyApi;
 
-    public void setCode(String code) {
-        this.code = code;
+    public void authorizeByCode(String code) {
+
+        AuthorizationRequestToken authorizationRequestToken = new AuthorizationRequestToken();
+        token = authorizationRequestToken
+                .getAuthorizationCodeToken(
+                        clientId,
+                        clientSecret,
+                        code,
+                        redirectUri);
     }
 
     /**
@@ -42,20 +48,6 @@ public class SpotifySession {
                 .build();
 
         return authorizationCodeFlow.constructUrl();
-    }
-
-    /**
-     * Получение AccessToken на 1 час по коду, полученному
-     * по переходу по редирект-ссылке
-     */
-    public void buildAuthorizationRequestToken() {
-        AuthorizationRequestToken authorizationRequestToken = new AuthorizationRequestToken();
-        token = authorizationRequestToken
-                .getAuthorizationCodeToken(
-                        clientId,
-                        clientSecret,
-                        code,
-                        redirectUri);
     }
 
     /**

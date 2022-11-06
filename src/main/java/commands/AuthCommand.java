@@ -4,7 +4,7 @@ import logic.ActiveUsers;
 import org.telegram.telegrambots.meta.api.objects.Chat;
 import org.telegram.telegrambots.meta.api.objects.User;
 import org.telegram.telegrambots.meta.bots.AbsSender;
-import spotify_tools.SpotifySession;
+import spotifyTools.SpotifySession;
 
 /**
  * Команда для начала авторизации. Генерирует редирект-ссылку и возвращает

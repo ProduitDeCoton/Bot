@@ -15,14 +15,14 @@ import org.telegram.telegrambots.meta.exceptions.TelegramApiException;
 public final class BotLogic extends TelegramLongPollingCommandBot{
     private final String BOT_NAME;
     private final String BOT_TOKEN;
-    private final NonCommand nonCommand;
+    private final NonCommand nonCommandHandler;
 
 
     public BotLogic(String botName, String botToken) {
         super();
         this.BOT_NAME = botName;
         this.BOT_TOKEN = botToken;
-        this.nonCommand = new NonCommand();
+        this.nonCommandHandler = new NonCommand();
         register(new StartCommand("start", "Старт"));
         register(new HelpCommand("help","Помощь"));
         register(new AuthCommand("auth", "Авторизация в Spotify"));
@@ -46,35 +46,25 @@ public final class BotLogic extends TelegramLongPollingCommandBot{
         Message msg = update.getMessage();
         User user = update.getMessage().getFrom();
         Long chatId = msg.getChatId();
-        String userName = getUserName(msg);
 
-        String answer = nonCommand.nonCommandExecute(user, msg.getText());
-        setAnswer(chatId, userName, answer);
-    }
-
-    /**
-     * Формирование имени пользователя
-     * @param msg сообщение
-     */
-    private String getUserName(Message msg) {
-        User user = msg.getFrom();
-        String userName = user.getUserName();
-        return (userName != null) ? userName : String.format("%s %s", user.getLastName(), user.getFirstName());
+        String answer = nonCommandHandler.nonCommandExecute(user, msg.getText());
+        setAnswer(chatId, answer);
     }
 
     /**
      * Отправка ответа
      * @param chatId id чата
-     * @param userName имя пользователя
      * @param text текст ответа
      */
-    private void setAnswer(Long chatId, String userName, String text) {
+    private void setAnswer(Long chatId, String text) {
         SendMessage answer = new SendMessage();
         answer.setText(text);
         answer.setChatId(chatId.toString());
         try {
             execute(answer);
         } catch (TelegramApiException e) {
+            System.out.println("TelegramApiException");
+            e.printStackTrace();
         }
     }
 
