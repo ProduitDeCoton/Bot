@@ -20,14 +20,14 @@ import java.util.ArrayList;
 public final class BotLogic extends TelegramLongPollingCommandBot {
     private final String BOT_NAME;
     private final String BOT_TOKEN;
-    private final NonCommand nonCommand;
+    private final NonCommand nonCommandHandler;
 
 
     public BotLogic(String botName, String botToken) {
         super();
         this.BOT_NAME = botName;
         this.BOT_TOKEN = botToken;
-        this.nonCommand = new NonCommand();
+        this.nonCommandHandler = new NonCommand();
         register(new StartCommand("start", "Старт"));
         register(new HelpCommand("help","Помощь"));
         register(new AuthCommand("auth", "Авторизация в Spotify"));
@@ -48,6 +48,9 @@ public final class BotLogic extends TelegramLongPollingCommandBot {
      */
     @Override
     public void processNonCommandUpdate(Update update) {
+        Message msg = update.getMessage();
+        User user = update.getMessage().getFrom();
+        Long chatId = msg.getChatId();
         if (update.hasInlineQuery()) {
             ArrayList<InlineQueryResult> inlineQueryResults = new ArrayList<>();
             // Добавлять объекты с результатами ниже
@@ -62,43 +65,35 @@ public final class BotLogic extends TelegramLongPollingCommandBot {
             try {
                 this.execute(answerInlineQuery);
             } catch (TelegramApiException e) {
+                System.out.println("TelegramApiException");
+                e.printStackTrace();
             }
-        } else {
-
+        }
+        else {
             // Если update не имеет inlineQuery, значит, пользователь отправил код для авторизации
             Message msg = update.getMessage();
             User user = update.getMessage().getFrom();
             Long chatId = msg.getChatId();
-            String userName = getUserName(msg);
 
-            String answer = nonCommand.nonCommandExecute(user, msg.getText());
-            setAnswer(chatId, userName, answer);
+            String answer = nonCommandHandler.nonCommandExecute(user, msg.getText());
+            setAnswer(chatId, answer);
         }
-    }
-
-    /**
-     * Формирование имени пользователя
-     * @param msg сообщение
-     */
-    private String getUserName(Message msg) {
-        User user = msg.getFrom();
-        String userName = user.getUserName();
-        return (userName != null) ? userName : String.format("%s %s", user.getLastName(), user.getFirstName());
     }
 
     /**
      * Отправка ответа
      * @param chatId id чата
-     * @param userName имя пользователя
      * @param text текст ответа
      */
-    private void setAnswer(Long chatId, String userName, String text) {
+    private void setAnswer(Long chatId, String text) {
         SendMessage answer = new SendMessage();
         answer.setText(text);
         answer.setChatId(chatId.toString());
         try {
             execute(answer);
         } catch (TelegramApiException e) {
+            System.out.println("TelegramApiException");
+            e.printStackTrace();
         }
     }
 

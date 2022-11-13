@@ -1,4 +1,4 @@
-package spotify_tools;
+package spotifyTools;
 
 import spotify.api.authorization.AuthorizationCodeFlow;
 import spotify.api.authorization.AuthorizationRefreshToken;
@@ -18,13 +18,22 @@ public class SpotifySession {
     private final static String clientId = System.getenv("SPOTIFY_CLIENT_ID");
     private final static String clientSecret = System.getenv("SPOTIFY_CLIENT_SECRET");
     private final static String redirectUri = "http://localhost:8080/auth/spotify/redirect";
-    private String code;
     private AuthorizationCodeFlowTokenResponse token;
 
-    public SpotifyApi spotifyApi;
+    private SpotifyApi spotifyApi;
 
-    public void setCode(String code) {
-        this.code = code;
+
+    public void authorizeByCode(String code) {
+
+        AuthorizationRequestToken authorizationRequestToken = new AuthorizationRequestToken();
+        token = authorizationRequestToken
+                .getAuthorizationCodeToken(
+                        clientId,
+                        clientSecret,
+                        code,
+                        redirectUri);
+
+        spotifyApi = new SpotifyApi(token.getAccessToken());
     }
 
     /**
@@ -49,38 +58,21 @@ public class SpotifySession {
     }
 
     /**
-     * Получение AccessToken на 1 час по коду, полученному
-     * по переходу по редирект-ссылке
-     */
-    public void buildAuthorizationRequestToken() {
-        AuthorizationRequestToken authorizationRequestToken = new AuthorizationRequestToken();
-        token = authorizationRequestToken
-                .getAuthorizationCodeToken(
-                        clientId,
-                        clientSecret,
-                        code,
-                        redirectUri);
-    }
-
-    /**
-     * Создание SpotifyApi для конкретного пользователя по
-     * его токену.
-     */
-    public void buildSpotifyApi() {
-        spotifyApi = new SpotifyApi(token.getAccessToken());
-    }
-
-    /**
      * Обновление истёкшего токена, используя
      * clientSecret и refreshToken
      */
-    public void buildAuthorizationRefreshToken() {
+    public void authorizeByRefreshToken() {
         AuthorizationRefreshToken authorizationRefreshToken = new AuthorizationRefreshToken();
         token = authorizationRefreshToken.refreshAccessToken(
                 clientId,
                 clientSecret,
                 token.getRefreshToken()
         );
+
+        spotifyApi = new SpotifyApi(token.getAccessToken());
     }
 
+    public SpotifyApi getSpotifyApi() {
+        return spotifyApi;
+    }
 }
