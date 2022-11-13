@@ -56,7 +56,7 @@ public class GetCurrentPlayingObjectTest {
         when(session.getTokenExpiresIn()).thenReturn(40);
         when(session.getSpotifyApi().getCurrentlyPlayedObject(any(Map.class)))
                 .thenReturn(currentlyPlayingObject);
-        when(session.getSpotifyApi().getTrack(any(String.class), any(Map.class)).getAlbum().getExternalUrls().getSpotify())
+        when(session.getSpotifyApi().getTrack(nullable(String.class), nullable(Map.class)).getAlbum().getExternalUrls().getSpotify())
                 .thenReturn("test link");
         when(session.getSpotifyApi().getTrack(any(String.class), any(Map.class)).getArtists())
                 .thenReturn(artists);
