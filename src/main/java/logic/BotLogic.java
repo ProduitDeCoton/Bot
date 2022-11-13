@@ -55,26 +55,30 @@ public final class BotLogic extends TelegramLongPollingCommandBot {
     @Override
     public void processNonCommandUpdate(Update update) {
         if (update.hasInlineQuery()) {
+            var inlineQueryId = update.getInlineQuery().getId();
+            Integer cacheTime;
+
             ArrayList<InlineQueryResult> inlineQueryResults = new ArrayList<>();
-            if (update.getInlineQuery().getQuery().contains("now")){
-                inlineQueryResults.clear();
+
+            if (update.getInlineQuery().getQuery().equals("nowplaying")) {
                 inlineQueryResults.add(new GetCurrentPlayingObject().constructInlineQueryResult(update.getInlineQuery().getFrom(),
                         "Текущий воспроизводимый трек"));
-            } else if (update.getInlineQuery().getQuery().contains("like")) {
-                inlineQueryResults.clear();
+                cacheTime = 3;
+            } else if (update.getInlineQuery().getQuery().equals("likedsongs")) {
                 inlineQueryResults.add(new GetLikedSongsPlaylist().constructInlineQueryResult(update.getInlineQuery().getFrom(),
                         "Ваши сохранённые треки"));
+                cacheTime = 120;
             } else {
                 InputTextMessageContent message = new InputTextMessageContent();
                 message.setMessageText("Wrong Command");
-                inlineQueryResults.clear();
                 inlineQueryResults.add(new InlineQueryResultArticle("Wrong Query", "Test", message));
+                cacheTime = 3;
             }
             // Добавлять объекты с результатами ниже
 
             AnswerInlineQuery answerInlineQuery = AnswerInlineQuery.builder()
-                    .inlineQueryId(update.getInlineQuery().getId())
-                    .cacheTime(2)
+                    .inlineQueryId(inlineQueryId)
+                    .cacheTime(cacheTime)
                     .results(inlineQueryResults)
                     .isPersonal(true)
                     .build();
