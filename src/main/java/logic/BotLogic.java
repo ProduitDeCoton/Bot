@@ -48,9 +48,6 @@ public final class BotLogic extends TelegramLongPollingCommandBot {
      */
     @Override
     public void processNonCommandUpdate(Update update) {
-        Message msg = update.getMessage();
-        User user = update.getMessage().getFrom();
-        Long chatId = msg.getChatId();
         if (update.hasInlineQuery()) {
             ArrayList<InlineQueryResult> inlineQueryResults = new ArrayList<>();
             // Добавлять объекты с результатами ниже
