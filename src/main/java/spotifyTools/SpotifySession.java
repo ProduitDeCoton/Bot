@@ -6,8 +6,7 @@ import spotify.api.authorization.AuthorizationRequestToken;
 import spotify.api.enums.AuthorizationScope;
 import spotify.api.spotify.SpotifyApi;
 import spotify.models.authorization.AuthorizationCodeFlowTokenResponse;
-
-import java.util.Arrays;
+import java.util.*;
 
 /**
  * Класс, создающий сессию Spotify Web API. Позволяет осуществлять
@@ -46,7 +45,10 @@ public class SpotifySession {
                 .setRedirectUri(redirectUri)
                 .setResponseType("code")
                 .setScopes(Arrays.asList(
-                        AuthorizationScope.USER_READ_CURRENTLY_PLAYING
+                        AuthorizationScope.USER_READ_CURRENTLY_PLAYING,
+                        AuthorizationScope.PLAYLIST_MODIFY_PUBLIC,
+                        AuthorizationScope.PLAYLIST_MODIFY_PRIVATE,
+                        AuthorizationScope.USER_LIBRARY_READ
                 ))
                 .build();
 
