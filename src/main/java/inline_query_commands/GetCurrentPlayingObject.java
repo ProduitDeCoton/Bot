@@ -7,7 +7,7 @@ import org.telegram.telegrambots.meta.api.objects.inlinequery.result.InlineQuery
 import org.telegram.telegrambots.meta.api.objects.inlinequery.result.InlineQueryResultArticle;
 import spotify.exceptions.SpotifyActionFailedException;
 import spotify.models.players.CurrentlyPlayingObject;
-import spotify_tools.SpotifySession;
+import spotifyTools.SpotifySession;
 
 import java.util.HashMap;
 import java.util.Map;
@@ -21,7 +21,8 @@ public class GetCurrentPlayingObject extends InlineQueryCommand {
     /**
      * Возвращает объект "текущий воспроизводимый трек".
      * Возвращает null, если сессия не задана.
-     * @param user
+     *
+     * @param user текущий Telegram-пользователь
      * @return CurrentlyPlayingObject
      */
     private CurrentlyPlayingObject getCurrentPlayingObject(User user) {
@@ -29,13 +30,12 @@ public class GetCurrentPlayingObject extends InlineQueryCommand {
         if (spotifySession == null) return null;
 
         if (spotifySession.getTokenExpiresIn() <= 30) {
-            spotifySession.buildAuthorizationRefreshToken();
-            spotifySession.buildSpotifyApi();
+            spotifySession.authorizeByRefreshToken();
         }
 
         Map<String, String> properties = new HashMap<>();
         try {
-            return spotifySession.spotifyApi.getCurrentlyPlayedObject(properties);
+            return spotifySession.getSpotifyApi().getCurrentlyPlayedObject(properties);
         } catch (SpotifyActionFailedException e) {
             return null;
         }
@@ -44,7 +44,7 @@ public class GetCurrentPlayingObject extends InlineQueryCommand {
     /**
      * Возвращает строку с названием трека.
      * Возвращает null, если трек есть null
-     * @param object
+     * @param object CurrentlyPlayingObject
      * @return String
      */
     private String getCurrentPlayingTrackName(CurrentlyPlayingObject object) {
@@ -55,7 +55,7 @@ public class GetCurrentPlayingObject extends InlineQueryCommand {
     /**
      * Возвращает ссылку на трек.
      * Возвращает null, если трек есть null
-     * @param object
+     * @param object CurrentlyPlayingObject
      * @return String
      */
     private String getCurrentPlayingTrackLink(CurrentlyPlayingObject object) {
@@ -68,8 +68,8 @@ public class GetCurrentPlayingObject extends InlineQueryCommand {
      * Возвращает ссылку на альбом, в котором находится трек.
      * Возвращает null, если не задана сессия в Spotify
      * или если трек есть null
-     * @param object
-     * @param user
+     * @param object CurrentlyPlayingObject
+     * @param user текущий Telegram-пользователь
      * @return String
      */
     private String getCurrentPlayingAlbumLink(CurrentlyPlayingObject object, User user) {
@@ -77,7 +77,7 @@ public class GetCurrentPlayingObject extends InlineQueryCommand {
         if (spotifySession == null || object == null) return null;
         var trackId = object.getItem().getId();
         Map<String, String> properties = new HashMap<>();
-        var link = spotifySession.spotifyApi.getTrack(trackId, properties).getAlbum().getExternalUrls().getSpotify();
+        var link = spotifySession.getSpotifyApi().getTrack(trackId, properties).getAlbum().getExternalUrls().getSpotify();
 
         return "[Альбом](" + link + ")";
     }
@@ -86,8 +86,8 @@ public class GetCurrentPlayingObject extends InlineQueryCommand {
      * Возвращает строку с именами всех исполнителей трека.
      * Возвращает null, если не задана сессия в Spotify
      * или трек есть null
-     * @param track
-     * @param user
+     * @param track CurrentlyPlayingObject
+     * @param user текущий Telegram-пользователь
      * @return String
      */
     private String getCurrentPlayingArtistName(CurrentlyPlayingObject track, User user) {
@@ -95,7 +95,7 @@ public class GetCurrentPlayingObject extends InlineQueryCommand {
         if (spotifySession == null || track == null) return null;
         var trackId = track.getItem().getId();
         Map<String, String> properties = new HashMap<>();
-        var artistsList = spotifySession.spotifyApi.getTrack(trackId, properties).getArtists();
+        var artistsList = spotifySession.getSpotifyApi().getTrack(trackId, properties).getArtists();
 
         StringBuilder artists = new StringBuilder();
         for (var artist : artistsList) {
@@ -109,8 +109,8 @@ public class GetCurrentPlayingObject extends InlineQueryCommand {
     /**
      * Возвращает InlineQueryResultArticle, готовый к использованию в
      * Inline-режиме. Содержит в себе информацию о текущем воспроизводимом треке.
-     * @param user
-     * @param showableInlineQueryText
+     * @param user текущий Telegram-пользователь
+     * @param showableInlineQueryText текст, который показывается во время показа inlineQuery
      * @return InlineQueryResultArticle
      */
     @Override

@@ -9,7 +9,7 @@ import org.telegram.telegrambots.meta.api.objects.inlinequery.result.InlineQuery
 public class GetCurrentPlayingObjectTest {
     @Test
     public void tryToCheckWhenSessionNull() {
-        User user = new User(865L, "testFirstName", false);
+        User user = new User(85865L, "testFirstName", false);
         var command = new GetCurrentPlayingObject();
         InlineQueryResultArticle result = (InlineQueryResultArticle) command.constructInlineQueryResult(user, "test");
         InputTextMessageContent resultMessage = (InputTextMessageContent) result.getInputMessageContent();
