@@ -160,14 +160,15 @@ public class GetLikedSongsPlaylist extends InlineQueryCommand {
         final var botPlaylistId = getBotPlaylistId(session);
         final var botPlaylistSnapshotId = getBotPlaylistSnapshotId(session);
 
-        updateBotPlaylist(botPlaylistId, botPlaylistSnapshotId, session);
+        Thread newThread = new Thread(() -> updateBotPlaylist(botPlaylistId, botPlaylistSnapshotId, session));
 
+        newThread.start();
         return session.getSpotifyApi().getPlaylist(botPlaylistId, null).getExternalUrls().getSpotify();
     }
 
     @Override
     public InlineQueryResult constructInlineQueryResult(User user, String showableInlineQueryText) {
-        InputTextMessageContent answerMessage = buildAnswerMessage("на ссылку" + buildPlaylist(user));
+        InputTextMessageContent answerMessage = buildAnswerMessage("[Любимые треки в Spotify](" + buildPlaylist(user) + ")");
         return new InlineQueryResultArticle("LIKED_SONGS", showableInlineQueryText, answerMessage);
     }
 }
