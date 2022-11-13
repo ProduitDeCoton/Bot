@@ -10,7 +10,7 @@ import spotify.models.playlists.PlaylistItem;
 import spotify.models.playlists.PlaylistTrack;
 import spotify.models.playlists.requests.CreateUpdatePlaylistRequestBody;
 import spotify.models.playlists.requests.DeleteItemsPlaylistRequestBody;
-import spotify_tools.SpotifySession;
+import spotifyTools.SpotifySession;
 
 import java.util.ArrayList;
 import java.util.HashMap;
@@ -29,7 +29,7 @@ public class GetLikedSongsPlaylist extends InlineQueryCommand {
     }
 
     private boolean botPlaylistExist(final SpotifySession session) {
-        final var playlists = session.spotifyApi
+        final var playlists = session.getSpotifyApi()
                 .getPlaylists(null)
                 .getItems();
 
@@ -43,7 +43,7 @@ public class GetLikedSongsPlaylist extends InlineQueryCommand {
     }
 
     private String getBotPlaylistId(final SpotifySession session) {
-        for (final var playlist : session.spotifyApi.getPlaylists(null).getItems()) {
+        for (final var playlist : session.getSpotifyApi().getPlaylists(null).getItems()) {
             if (playlist.getName().equals(getBotPlaylistName())) {
                 return playlist.getId();
             }
@@ -52,7 +52,7 @@ public class GetLikedSongsPlaylist extends InlineQueryCommand {
         return null;
     }
     private String getBotPlaylistSnapshotId(final SpotifySession session) {
-        for (final var playlist : session.spotifyApi.getPlaylists(null).getItems()) {
+        for (final var playlist : session.getSpotifyApi().getPlaylists(null).getItems()) {
             if (playlist.getName().equals(getBotPlaylistName())) {
                 return playlist.getSnapshotId();
             }
@@ -65,24 +65,23 @@ public class GetLikedSongsPlaylist extends InlineQueryCommand {
         final CreateUpdatePlaylistRequestBody body = new CreateUpdatePlaylistRequestBody(
                 getBotPlaylistName(),
                 "Плейлист генерируется автоматически и включает в себя " +
-                        "первые 1000 сохранённых песен. Во избежание ошибок не меняйте его " +
-                        "содержимое самостоятельно",
+                        "первые 1000 сохранённых песен.",
                 true, false);
 
-        session.spotifyApi.createPlaylist(session.spotifyApi.getCurrentUser().getId(), body);
+        session.getSpotifyApi().createPlaylist(session.getSpotifyApi().getCurrentUser().getId(), body);
     }
 
     private void deletePlaylistTracks(final String playlistId, final String playlistSnapshotId, final SpotifySession session) {
         final Map<String, String> getPlaylistTracksProperties = Map.ofEntries(entry("limit", "100"));
 
         int trackPosition = 0;
-        Paging<PlaylistTrack> playlistTracks = null;
+        Paging<PlaylistTrack> playlistTracks;
         boolean stopDelete = false;
 
         do {
-            playlistTracks = session.spotifyApi.getPlaylistTracks(playlistId, getPlaylistTracksProperties);
+            playlistTracks = session.getSpotifyApi().getPlaylistTracks(playlistId, getPlaylistTracksProperties);
 
-            if (playlistTracks.getTotal() <= Integer.valueOf(getPlaylistTracksProperties.get("limit"))) {
+            if (playlistTracks.getTotal() <= Integer.parseInt(getPlaylistTracksProperties.get("limit"))) {
                 stopDelete = true;
             }
 
@@ -94,12 +93,12 @@ public class GetLikedSongsPlaylist extends InlineQueryCommand {
             }
 
             final var deleteItemsPlaylistRequestBody = new DeleteItemsPlaylistRequestBody(deleteTracks, playlistSnapshotId);
-            session.spotifyApi.deleteItemsFromPlaylist(playlistId, deleteItemsPlaylistRequestBody);
+            session.getSpotifyApi().deleteItemsFromPlaylist(playlistId, deleteItemsPlaylistRequestBody);
 
         } while (!stopDelete);
     }
 
-    private void addPlaylistTracks(final String playlistId, final String playlistSnapshotId, final SpotifySession session) {
+    private void addPlaylistTracks(final String playlistId, final SpotifySession session) {
         final Map<String, String> getSavedTracksProperties = new HashMap<>();
         getSavedTracksProperties.put("limit", "50");
         getSavedTracksProperties.put("offset", "0");
@@ -107,10 +106,10 @@ public class GetLikedSongsPlaylist extends InlineQueryCommand {
         int trackCount = 0;
         boolean overLimit = false;
 
-        for (int offset = 0; offset < session.spotifyApi.getSavedTracks(getSavedTracksProperties).getTotal(); offset += 50) {
+        for (int offset = 0; offset < session.getSpotifyApi().getSavedTracks(getSavedTracksProperties).getTotal(); offset += 50) {
 
             getSavedTracksProperties.put("offset", String.valueOf(offset));
-            final var savedTracks = session.spotifyApi.getSavedTracks(getSavedTracksProperties).getItems();
+            final var savedTracks = session.getSpotifyApi().getSavedTracks(getSavedTracksProperties).getItems();
             final var savedTracksUris = new ArrayList<String>();
 
             for (var track : savedTracks) {
@@ -127,13 +126,13 @@ public class GetLikedSongsPlaylist extends InlineQueryCommand {
                 break;
             }
 
-            session.spotifyApi.addItemsToPlaylist(savedTracksUris, playlistId, offset);
+            session.getSpotifyApi().addItemsToPlaylist(savedTracksUris, playlistId, offset);
         }
     }
 
     private void updateBotPlaylist(final String playlistId, final String playlistSnapshotId, final SpotifySession session) {
         deletePlaylistTracks(playlistId, playlistSnapshotId, session);
-        addPlaylistTracks(playlistId, playlistSnapshotId, session);
+        addPlaylistTracks(playlistId, session);
     }
 
     public SpotifySession getSession(final User user) {
@@ -144,9 +143,7 @@ public class GetLikedSongsPlaylist extends InlineQueryCommand {
         }
 
         if (spotifySession.getTokenExpiresIn() <= 30) {
-            spotifySession.buildAuthorizationRefreshToken();
-            spotifySession.buildSpotifyApi();
-
+            spotifySession.authorizeByRefreshToken();
             ActiveUsers.updateActiveUsers(user, spotifySession);
         }
 
@@ -165,7 +162,7 @@ public class GetLikedSongsPlaylist extends InlineQueryCommand {
 
         updateBotPlaylist(botPlaylistId, botPlaylistSnapshotId, session);
 
-        return session.spotifyApi.getPlaylist(botPlaylistId, null).getExternalUrls().getSpotify();
+        return session.getSpotifyApi().getPlaylist(botPlaylistId, null).getExternalUrls().getSpotify();
     }
 
     @Override
