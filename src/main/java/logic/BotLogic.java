@@ -67,7 +67,7 @@ public final class BotLogic extends TelegramLongPollingCommandBot {
             } else if (update.getInlineQuery().getQuery().equals("likedsongs")) {
                 inlineQueryResults.add(new GetLikedSongsPlaylist().constructInlineQueryResult(update.getInlineQuery().getFrom(),
                         "Ваши сохранённые треки"));
-                cacheTime = 120;
+                cacheTime = 60;
             } else {
                 InputTextMessageContent message = new InputTextMessageContent();
                 message.setMessageText("Wrong Command");
