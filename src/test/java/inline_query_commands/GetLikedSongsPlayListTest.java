@@ -19,7 +19,8 @@ import java.util.Map;
 import static org.mockito.Mockito.*;
 
 /**
- * Тестирование класса, ответственного за обновление плейлиста любимых треков
+ * Тестирование класса, ответственного за обновление плейлиста любимых треков.
+ * Ожидаемый результат: ссылка (URI) на плейлист, с которым работает бот.
  */
 public class GetLikedSongsPlayListTest {
     private final SpotifySession session = Mockito.mock(SpotifySession.class, RETURNS_DEEP_STUBS);
