@@ -21,14 +21,17 @@ public class HelpCommand extends ServiceCommand {
         sendAnswer(absSender, chat.getId(), this.getCommandIdentifier(), userName,
                 "Я музыкальный бот, для работы со мной вы должны пройти аутентификацию\n" +
                         "\n" +
-                        "Для этого нажми /auth\n" +
+                        "Для этого нажмите /auth\n" +
                         "\n" +
-                        "Я могу показать текущий трек, играюший на платформе 'spotify'\n" +
+                        "Я могу показать текущий трек, играющий на платформе Spotify\n" +
                         "\n" +
                         "и т.д.\n" +
                         "\n" +
                         "❗Список команд\n" +
-                        "/auth - аутентификация в 'spotify'\n" +
-                        "/help - помощь\n");
+                        "/auth - аутентификация в Spotify\n" +
+                        "/help - помощь\n\n" +
+                        "Команды, вызываемые в любом чате:\n" +
+                        "@spotify_now_bot likedsongs - создание плейлиста с вашими любимыми треками\n" +
+                        "@spotify_now_bot nowplaying - ссылка на текущий воспроизводимый трек");
     }
 }
