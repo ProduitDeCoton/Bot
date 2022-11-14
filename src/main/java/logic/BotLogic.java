@@ -70,8 +70,8 @@ public final class BotLogic extends TelegramLongPollingCommandBot {
                 cacheTime = 60;
             } else {
                 InputTextMessageContent message = new InputTextMessageContent();
-                message.setMessageText("Wrong Command");
-                inlineQueryResults.add(new InlineQueryResultArticle("Wrong Query", "Test", message));
+                message.setMessageText("Неправильная команда");
+                inlineQueryResults.add(new InlineQueryResultArticle("Wrong Query", "Ожидание команды...", message));
                 cacheTime = 3;
             }
             // Добавлять объекты с результатами ниже
