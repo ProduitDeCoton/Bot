@@ -22,6 +22,12 @@ import static org.mockito.Mockito.*;
 public class GetCurrentPlayingObjectTest {
     private final SpotifySession session = Mockito.mock(SpotifySession.class, RETURNS_DEEP_STUBS);
 
+    /**
+     * Тест-кейс: пользователь не авторизовался в бота или
+     * отозвал разрешение в параметрах Spotify.
+     * Ожидаемый результат: в ответ на Inline-команду
+     * выведется "Сейчас ничего не играет в Spotify"
+     */
     @Test
     public void tryToCheckWhenSessionNull() {
         User user = new User(85865L, "testFirstName", false);
@@ -33,6 +39,13 @@ public class GetCurrentPlayingObjectTest {
         Assert.assertEquals(resultString, "Сейчас ничего не играет в Spotify");
     }
 
+    /**
+     * Тест-кейс: SpotifyApi получил доступ к данным пользователя
+     * и пытается вывести текущий трек.
+     * Ожидаемый редультат: в ответ на Inline-команду выведется
+     * трек "Test track name" исполнителя "test artist"
+     * c ссылками на трек и альбом "test link"
+     */
     @Test
     public void testReturningInlineQueryResult() {
         var inlineQueryAnswer = new GetCurrentPlayingObject();
