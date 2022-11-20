@@ -26,7 +26,7 @@ public class GetLikedSongsPlaylist extends InlineQueryCommand {
 
     private final String botPlaylistName;
 
-    GetLikedSongsPlaylist() {
+    public GetLikedSongsPlaylist() {
         final String botName = System.getenv("BOT_NAME");
         botPlaylistName = "%s PLAYLIST".formatted(botName);
     }
