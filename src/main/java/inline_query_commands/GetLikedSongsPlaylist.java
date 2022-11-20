@@ -31,10 +31,18 @@ public class GetLikedSongsPlaylist extends InlineQueryCommand {
         botPlaylistName = "%s PLAYLIST".formatted(botName);
     }
 
+
+    /**
+     * Название сформированного ботом плейлиста любимых треков.
+     */
     private String getBotPlaylistName() {
         return botPlaylistName;
     }
 
+
+    /**
+     * Создан ли в библиотеке пользователя плейлист бота
+     */
     private boolean botPlaylistExist(final SpotifySession session) {
         final var playlists = session.getSpotifyApi()
                 .getPlaylists(null)
@@ -49,6 +57,9 @@ public class GetLikedSongsPlaylist extends InlineQueryCommand {
         return false;
     }
 
+    /**
+     * Получение идентификатора плейлиста бота
+     */
     private String getBotPlaylistId(final SpotifySession session) {
         for (final var playlist : session.getSpotifyApi().getPlaylists(null).getItems()) {
             if (playlist.getName().equals(getBotPlaylistName())) {
@@ -58,6 +69,10 @@ public class GetLikedSongsPlaylist extends InlineQueryCommand {
 
         return null;
     }
+
+    /**
+     * Получение идентификатора снимка плейлиста бота
+     */
     private String getBotPlaylistSnapshotId(final SpotifySession session) {
         for (final var playlist : session.getSpotifyApi().getPlaylists(null).getItems()) {
             if (playlist.getName().equals(getBotPlaylistName())) {
@@ -68,6 +83,10 @@ public class GetLikedSongsPlaylist extends InlineQueryCommand {
         return null;
     }
 
+    /**
+     * Создание плейлиста любимых треков.
+     * Плейлист создаётся пустым.
+     */
     private void createBotPlayList(final SpotifySession session) {
         final CreateUpdatePlaylistRequestBody body = new CreateUpdatePlaylistRequestBody(
                 getBotPlaylistName(),
@@ -81,6 +100,9 @@ public class GetLikedSongsPlaylist extends InlineQueryCommand {
         spotifyApi.createPlaylist(userId, body);
     }
 
+    /**
+     * Удаление треков из плейлиста.
+     */
     private void deletePlaylistTracks(final String playlistId, final String playlistSnapshotId, final SpotifySession session) {
         final Map<String, String> getPlaylistTracksProperties = Map.ofEntries(entry("limit", "100"));
 
@@ -108,6 +130,9 @@ public class GetLikedSongsPlaylist extends InlineQueryCommand {
         } while (!stopDelete);
     }
 
+    /**
+     * Добавление любимых треков в плейлист.
+     */
     private void addPlaylistTracks(final String playlistId, final SpotifySession session) {
         final Map<String, String> getSavedTracksProperties = new HashMap<>();
         getSavedTracksProperties.put("limit", "50");
@@ -140,6 +165,9 @@ public class GetLikedSongsPlaylist extends InlineQueryCommand {
         }
     }
 
+    /**
+     * Обновление содержимого плейлиста. 
+     */
     private void updateBotPlaylist(final String playlistId, final String playlistSnapshotId, final SpotifySession session) {
         deletePlaylistTracks(playlistId, playlistSnapshotId, session);
         addPlaylistTracks(playlistId, session);
