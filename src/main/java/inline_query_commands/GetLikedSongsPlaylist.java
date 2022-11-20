@@ -75,7 +75,10 @@ public class GetLikedSongsPlaylist extends InlineQueryCommand {
                         "первые 1000 сохранённых песен.",
                 true, false);
 
-        session.getSpotifyApi().createPlaylist(session.getSpotifyApi().getCurrentUser().getId(), body);
+        final var spotifyApi = session.getSpotifyApi();
+        final var userId = spotifyApi.getCurrentUser().getId();
+
+        spotifyApi.createPlaylist(userId, body);
     }
 
     private void deletePlaylistTracks(final String playlistId, final String playlistSnapshotId, final SpotifySession session) {
