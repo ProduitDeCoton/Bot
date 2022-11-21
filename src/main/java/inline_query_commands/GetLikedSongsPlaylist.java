@@ -190,7 +190,7 @@ public class GetLikedSongsPlaylist extends InlineQueryCommand {
 
         for (int offset = 0; offset < totalTracks; offset += 50) {
 
-            getSavedTracksProperties.put("offset", String.valueOf(offset));
+            getSavedTracksProperties.replace("offset", String.valueOf(offset));
 
             final var savedTracks = spotifyApi.
                 getSavedTracks(getSavedTracksProperties).
