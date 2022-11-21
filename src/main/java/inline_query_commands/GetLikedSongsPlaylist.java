@@ -24,6 +24,30 @@ import static java.util.Map.entry;
  */
 public class GetLikedSongsPlaylist extends InlineQueryCommand {
 
+    final class PlaylistInfo {
+        private final boolean exist_;
+        private final String id_;
+        private final String snapshotId_;
+
+        PlaylistInfo(final boolean exist, final String id, final String snapshotId) {
+            exist_ = exist;
+            id_ = id;
+            snapshotId_ = snapshotId;
+        }
+
+        public boolean exist() {
+            return exist_;
+        }
+
+        public String getId() {
+            return id_;
+        }
+
+        public String getSnapshotId() {
+            return snapshotId_;
+        }
+    }
+
     private final String botPlaylistName;
 
     public GetLikedSongsPlaylist() {
@@ -40,11 +64,7 @@ public class GetLikedSongsPlaylist extends InlineQueryCommand {
         return botPlaylistName;
     }
 
-
-    /**
-     * Создан ли в библиотеке пользователя плейлист бота
-     */
-    private boolean botPlaylistExist(final SpotifySession session) {
+    private PlaylistInfo getBotPlaylistInfo(final SpotifySession session) {
 
         final var playlists = session.getSpotifyApi()
             .getPlaylists(null)
@@ -55,63 +75,18 @@ public class GetLikedSongsPlaylist extends InlineQueryCommand {
         for (final var playlist : playlists) {
 
             if (playlist.getName().equals(botPlaylistName)) {
-                return true;
+
+                final var id = playlist.getId();
+                final var snapId = playlist.getSnapshotId();
+
+                return new PlaylistInfo(true, id, snapId);
             }
         }
 
-        return false;
+        return new PlaylistInfo(false, null, null);
     }
 
-    /**
-     * Получение идентификатора плейлиста бота
-     */
-    private String getBotPlaylistId(final SpotifySession session) {
-
-        final var playlists = session
-            .getSpotifyApi()
-            .getPlaylists(null)
-            .getItems();
-
-        final var botPlaylistName = getBotPlaylistName();
-
-        for (final var playlist : playlists) {
-
-            if (playlist.getName().equals(botPlaylistName)) {
-                return playlist.getId();
-            }
-        }
-
-        return null;
-    }
-
-    /**
-     * Получение идентификатора снимка плейлиста бота
-     */
-    private String getBotPlaylistSnapshotId(final SpotifySession session) {
-
-        final var playlists = session.
-            getSpotifyApi().
-            getPlaylists(null).
-            getItems();
-
-        final var botPlaylistName = getBotPlaylistName();
-
-        for (final var playlist : playlists) {
-
-            if (playlist.getName().equals(botPlaylistName)) {
-                return playlist.getSnapshotId();
-            }
-        }
-
-        return null;
-    }
-
-    /**
-     * Создание плейлиста любимых треков.
-     * Плейлист создаётся пустым.
-     */
     private void createBotPlayList(final SpotifySession session) {
-
         final CreateUpdatePlaylistRequestBody body = new CreateUpdatePlaylistRequestBody(
                 getBotPlaylistName(),
                 "Плейлист генерируется автоматически и включает в себя " +
@@ -226,18 +201,20 @@ public class GetLikedSongsPlaylist extends InlineQueryCommand {
     public String buildPlaylist(final User user) {
 
         final var session = getSession(user);
+        final var botPlaylistInfo = getBotPlaylistInfo(session);
 
-        if (!botPlaylistExist(session)) {
+        if (!botPlaylistInfo.exist()) {
             createBotPlayList(session);
         }
 
-        final var botPlaylistId = getBotPlaylistId(session);
-        final var botPlaylistSnapshotId = getBotPlaylistSnapshotId(session);
+        Thread newThread = new Thread(() -> updateBotPlaylist(
+                botPlaylistInfo.getId(),
+                botPlaylistInfo.getSnapshotId(),
+                session));
 
-        Thread newThread = new Thread(() -> updateBotPlaylist(botPlaylistId, botPlaylistSnapshotId, session));
         newThread.start();
 
-        return session.getSpotifyApi().getPlaylist(botPlaylistId, null).getExternalUrls().getSpotify();
+        return session.getSpotifyApi().getPlaylist(botPlaylistInfo.getId(), null).getExternalUrls().getSpotify();
     }
 
     @Override
