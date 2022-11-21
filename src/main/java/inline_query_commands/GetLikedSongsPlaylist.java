@@ -50,9 +50,11 @@ public class GetLikedSongsPlaylist extends InlineQueryCommand {
             .getPlaylists(null)
             .getItems();
 
+        final var botPlaylistName = getBotPlaylistName();
+
         for (final var playlist : playlists) {
 
-            if (playlist.getName().equals(getBotPlaylistName())) {
+            if (playlist.getName().equals(botPlaylistName)) {
                 return true;
             }
         }
@@ -65,9 +67,16 @@ public class GetLikedSongsPlaylist extends InlineQueryCommand {
      */
     private String getBotPlaylistId(final SpotifySession session) {
 
-        for (final var playlist : session.getSpotifyApi().getPlaylists(null).getItems()) {
+        final var playlists = session
+            .getSpotifyApi()
+            .getPlaylists(null)
+            .getItems();
 
-            if (playlist.getName().equals(getBotPlaylistName())) {
+        final var botPlaylistName = getBotPlaylistName();
+
+        for (final var playlist : playlists) {
+
+            if (playlist.getName().equals(botPlaylistName)) {
                 return playlist.getId();
             }
         }
@@ -80,9 +89,16 @@ public class GetLikedSongsPlaylist extends InlineQueryCommand {
      */
     private String getBotPlaylistSnapshotId(final SpotifySession session) {
 
-        for (final var playlist : session.getSpotifyApi().getPlaylists(null).getItems()) {
+        final var playlists = session.
+            getSpotifyApi().
+            getPlaylists(null).
+            getItems();
 
-            if (playlist.getName().equals(getBotPlaylistName())) {
+        final var botPlaylistName = getBotPlaylistName();
+
+        for (final var playlist : playlists) {
+
+            if (playlist.getName().equals(botPlaylistName)) {
                 return playlist.getSnapshotId();
             }
         }
