@@ -13,7 +13,6 @@ import spotify.models.playlists.requests.DeleteItemsPlaylistRequestBody;
 import spotifyTools.SpotifySession;
 
 import java.util.ArrayList;
-import java.util.HashMap;
 import java.util.Map;
 
 import static java.util.Map.entry;
@@ -24,95 +23,183 @@ import static java.util.Map.entry;
  */
 public class GetLikedSongsPlaylist extends InlineQueryCommand {
 
-    private String getBotPlaylistName() {
-        return "%s PLAYLIST".formatted(System.getenv("BOT_NAME"));
+    final class PlaylistInfo {
+
+        private final boolean exist_;
+        private final String id_;
+        private final String snapshotId_;
+
+        PlaylistInfo(
+
+            final boolean exist,
+            final String id,
+            final String snapshotId)
+        {
+            exist_ = exist;
+            id_ = id;
+            snapshotId_ = snapshotId;
+        }
+
+        public boolean exist() {
+            return exist_;
+        }
+
+        public String getId() {
+            return id_;
+        }
+
+        public String getSnapshotId() {
+            return snapshotId_;
+        }
     }
 
-    private boolean botPlaylistExist(final SpotifySession session) {
+    private final String botPlaylistName;
+
+    public GetLikedSongsPlaylist() {
+
+        final String botName = System.getenv("BOT_NAME");
+        botPlaylistName = "%s PLAYLIST".formatted(botName);
+    }
+
+    /**
+     * Название сформированного ботом плейлиста любимых треков.
+     */
+    private String getBotPlaylistName() {
+        return botPlaylistName;
+    }
+
+    /**
+     * Информация о ботовском плейлисте любимых треков.
+     */
+    private PlaylistInfo getBotPlaylistInfo(final SpotifySession session) {
+
         final var playlists = session.getSpotifyApi()
-                .getPlaylists(null)
-                .getItems();
+            .getPlaylists(null)
+            .getItems();
+
+        final var botPlaylistName = getBotPlaylistName();
 
         for (final var playlist : playlists) {
-            if (playlist.getName().equals(getBotPlaylistName())) {
-                return true;
+
+            if (playlist.getName().equals(botPlaylistName)) {
+
+                final var id = playlist.getId();
+                final var snapId = playlist.getSnapshotId();
+
+                return new PlaylistInfo(true, id, snapId);
             }
         }
 
-        return false;
+        return new PlaylistInfo(false, null, null);
     }
 
-    private String getBotPlaylistId(final SpotifySession session) {
-        for (final var playlist : session.getSpotifyApi().getPlaylists(null).getItems()) {
-            if (playlist.getName().equals(getBotPlaylistName())) {
-                return playlist.getId();
-            }
-        }
-
-        return null;
-    }
-    private String getBotPlaylistSnapshotId(final SpotifySession session) {
-        for (final var playlist : session.getSpotifyApi().getPlaylists(null).getItems()) {
-            if (playlist.getName().equals(getBotPlaylistName())) {
-                return playlist.getSnapshotId();
-            }
-        }
-
-        return null;
-    }
-
+    /**
+     * Создание плейлиста бота.
+     */
     private void createBotPlayList(final SpotifySession session) {
-        final CreateUpdatePlaylistRequestBody body = new CreateUpdatePlaylistRequestBody(
-                getBotPlaylistName(),
-                "Плейлист генерируется автоматически и включает в себя " +
-                        "первые 1000 сохранённых песен.",
-                true, false);
 
-        session.getSpotifyApi().createPlaylist(session.getSpotifyApi().getCurrentUser().getId(), body);
+        final CreateUpdatePlaylistRequestBody body =
+            new CreateUpdatePlaylistRequestBody(
+                getBotPlaylistName(),
+
+                "Плейлист генерируется автоматически и включает в себя " +
+                "первые 1000 сохранённых песен.",
+
+                true,
+                false);
+
+        final var spotifyApi = session.getSpotifyApi();
+        final var userId = spotifyApi.getCurrentUser().getId();
+
+        spotifyApi.createPlaylist(userId, body);
     }
 
-    private void deletePlaylistTracks(final String playlistId, final String playlistSnapshotId, final SpotifySession session) {
-        final Map<String, String> getPlaylistTracksProperties = Map.ofEntries(entry("limit", "100"));
+    /**
+     * Удаление треков из плейлиста.
+     */
+    private void deletePlaylistTracks(
+            final String playlistId,
+            final String playlistSnapshotId,
+            final SpotifySession session)
+    {
+        final Map<String, String> getPlaylistTracksProperties = Map.
+            ofEntries(entry("limit", "100"));
 
         int trackPosition = 0;
         Paging<PlaylistTrack> playlistTracks;
         boolean stopDelete = false;
 
-        do {
-            playlistTracks = session.getSpotifyApi().getPlaylistTracks(playlistId, getPlaylistTracksProperties);
+        final var spotifyApi = session.getSpotifyApi();
 
-            if (playlistTracks.getTotal() <= Integer.parseInt(getPlaylistTracksProperties.get("limit"))) {
+        do {
+            playlistTracks = spotifyApi.
+                getPlaylistTracks(playlistId, getPlaylistTracksProperties);
+
+            final int propertyLimit = Integer.
+                parseInt(getPlaylistTracksProperties.get("limit"));
+
+            if (playlistTracks.getTotal() <= propertyLimit) {
+
                 stopDelete = true;
             }
 
-            var deleteTracks = new ArrayList<PlaylistItem>();
+            final var deleteTracks = new ArrayList<PlaylistItem>();
 
-            for (var track : playlistTracks.getItems()) {
-                deleteTracks.add(new PlaylistItem(track.getTrack().getUri(), new int[]{trackPosition}));
+            for (final var track : playlistTracks.getItems()) {
+
+                deleteTracks.add(
+                    new PlaylistItem(track.getTrack().getUri(),
+                        new int[]{trackPosition}));
+
                 trackPosition++;
             }
 
-            final var deleteItemsPlaylistRequestBody = new DeleteItemsPlaylistRequestBody(deleteTracks, playlistSnapshotId);
-            session.getSpotifyApi().deleteItemsFromPlaylist(playlistId, deleteItemsPlaylistRequestBody);
+            final var deleteItemsPlaylistRequestBody =
+
+                new DeleteItemsPlaylistRequestBody(
+                        deleteTracks,
+                        playlistSnapshotId);
+
+            spotifyApi.deleteItemsFromPlaylist(
+                    playlistId, deleteItemsPlaylistRequestBody);
 
         } while (!stopDelete);
     }
 
-    private void addPlaylistTracks(final String playlistId, final SpotifySession session) {
-        final Map<String, String> getSavedTracksProperties = new HashMap<>();
-        getSavedTracksProperties.put("limit", "50");
-        getSavedTracksProperties.put("offset", "0");
+    /**
+     * Добавление любимых треков в плейлист.
+     */
+    private void addPlaylistTracks(
+
+            final String playlistId,
+            final SpotifySession session)
+    {
+        final Map<String, String> getSavedTracksProperties =
+            Map.ofEntries(
+                    entry("limit", "50"),
+                    entry("offset", "0"));
 
         int trackCount = 0;
         boolean overLimit = false;
 
-        for (int offset = 0; offset < session.getSpotifyApi().getSavedTracks(getSavedTracksProperties).getTotal(); offset += 50) {
+        final var spotifyApi = session.getSpotifyApi();
 
-            getSavedTracksProperties.put("offset", String.valueOf(offset));
-            final var savedTracks = session.getSpotifyApi().getSavedTracks(getSavedTracksProperties).getItems();
+        final var totalTracks = spotifyApi
+            .getSavedTracks(getSavedTracksProperties)
+            .getTotal();
+
+        for (int offset = 0; offset < totalTracks; offset += 50) {
+
+            getSavedTracksProperties.replace("offset", String.valueOf(offset));
+
+            final var savedTracks = spotifyApi.
+                getSavedTracks(getSavedTracksProperties).
+                getItems();
+
             final var savedTracksUris = new ArrayList<String>();
 
-            for (var track : savedTracks) {
+            for (final var track : savedTracks) {
+
                 if (trackCount >= 1000) {
                     overLimit = true;
                     break;
@@ -126,16 +213,25 @@ public class GetLikedSongsPlaylist extends InlineQueryCommand {
                 break;
             }
 
-            session.getSpotifyApi().addItemsToPlaylist(savedTracksUris, playlistId, offset);
+            spotifyApi.addItemsToPlaylist(savedTracksUris, playlistId, offset);
         }
     }
 
-    private void updateBotPlaylist(final String playlistId, final String playlistSnapshotId, final SpotifySession session) {
+    /**
+     * Обновление содержимого плейлиста. 
+     */
+    private void updateBotPlaylist(
+
+            final String playlistId,
+            final String playlistSnapshotId,
+            final SpotifySession session)
+    {
         deletePlaylistTracks(playlistId, playlistSnapshotId, session);
         addPlaylistTracks(playlistId, session);
     }
 
     public SpotifySession getSession(final User user) {
+
         final var spotifySession = ActiveUsers.getSession(user);
 
         if (spotifySession == null) {
@@ -143,6 +239,7 @@ public class GetLikedSongsPlaylist extends InlineQueryCommand {
         }
 
         if (spotifySession.getTokenExpiresIn() <= 30) {
+
             spotifySession.authorizeByRefreshToken();
             ActiveUsers.updateActiveUsers(user, spotifySession);
         }
@@ -151,24 +248,39 @@ public class GetLikedSongsPlaylist extends InlineQueryCommand {
     }
 
     public String buildPlaylist(final User user) {
-        final var session = getSession(user);
 
-        if (!botPlaylistExist(session)) {
+        final var session = getSession(user);
+        final var botPlaylistInfo = getBotPlaylistInfo(session);
+
+        if (!botPlaylistInfo.exist()) {
             createBotPlayList(session);
         }
 
-        final var botPlaylistId = getBotPlaylistId(session);
-        final var botPlaylistSnapshotId = getBotPlaylistSnapshotId(session);
-
-        Thread newThread = new Thread(() -> updateBotPlaylist(botPlaylistId, botPlaylistSnapshotId, session));
+        final Thread newThread = new Thread(() -> updateBotPlaylist(
+                botPlaylistInfo.getId(),
+                botPlaylistInfo.getSnapshotId(),
+                session));
 
         newThread.start();
-        return session.getSpotifyApi().getPlaylist(botPlaylistId, null).getExternalUrls().getSpotify();
+
+        return session
+            .getSpotifyApi()
+            .getPlaylist(botPlaylistInfo.getId(), null)
+            .getExternalUrls()
+            .getSpotify();
     }
 
     @Override
-    public InlineQueryResult constructInlineQueryResult(User user, String showableInlineQueryText) {
-        InputTextMessageContent answerMessage = buildAnswerMessage("[Любимые треки в Spotify](" + buildPlaylist(user) + ")");
-        return new InlineQueryResultArticle("LIKED_SONGS", showableInlineQueryText, answerMessage);
+    public InlineQueryResult constructInlineQueryResult(
+
+            final User user,
+            final String showableInlineQueryText)
+    {
+        final InputTextMessageContent answerMessage =
+            buildAnswerMessage(
+                    "[Любимые треки в Spotify](" + buildPlaylist(user) + ")");
+
+        return new InlineQueryResultArticle(
+                "LIKED_SONGS", showableInlineQueryText, answerMessage);
     }
 }
