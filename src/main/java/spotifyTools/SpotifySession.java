@@ -48,7 +48,9 @@ public class SpotifySession {
                         AuthorizationScope.USER_READ_CURRENTLY_PLAYING,
                         AuthorizationScope.PLAYLIST_MODIFY_PUBLIC,
                         AuthorizationScope.PLAYLIST_MODIFY_PRIVATE,
-                        AuthorizationScope.USER_LIBRARY_READ
+                        AuthorizationScope.USER_LIBRARY_READ,
+                        AuthorizationScope.USER_MODIFY_PLAYBACK_STATE,
+                        AuthorizationScope.USER_READ_PLAYBACK_STATE
                 ))
                 .build();
 

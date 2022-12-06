@@ -1,9 +1,6 @@
 package logic;
 
-import commands.AuthCommand;
-import commands.HelpCommand;
-import commands.NonCommand;
-import commands.StartCommand;
+import commands.*;
 import inline_query_commands.GetCurrentPlayingObject;
 import inline_query_commands.GetLikedSongsPlaylist;
 import org.telegram.telegrambots.extensions.bots.commandbot.TelegramLongPollingCommandBot;
@@ -16,6 +13,7 @@ import org.telegram.telegrambots.meta.api.objects.inlinequery.inputmessageconten
 import org.telegram.telegrambots.meta.api.objects.inlinequery.result.InlineQueryResult;
 import org.telegram.telegrambots.meta.api.objects.inlinequery.result.InlineQueryResultArticle;
 import org.telegram.telegrambots.meta.exceptions.TelegramApiException;
+import spotifyTools.SpotifyGroup;
 
 import java.util.ArrayList;
 
@@ -35,6 +33,7 @@ public final class BotLogic extends TelegramLongPollingCommandBot {
         register(new StartCommand("start", "Старт"));
         register(new HelpCommand("help","Помощь"));
         register(new AuthCommand("auth", "Авторизация в Spotify"));
+        register(new GroupCommand("group", "Создание групповой сессии"));
     }
 
     @Override
@@ -89,7 +88,21 @@ public final class BotLogic extends TelegramLongPollingCommandBot {
                 e.printStackTrace();
             }
         }
-        else {
+
+        else if (update.hasCallbackQuery()) {
+            User leader = update.getCallbackQuery().getFrom();
+
+            ActiveGroups.createGroup(leader);
+            ActiveGroups.getGroupSession(leader).transferPlayback(update.getCallbackQuery().getData());
+
+            setAnswer(update.getCallbackQuery().getMessage().getChatId(),
+                    "Устройство " + update.getCallbackQuery().getData() + " выбрано. " +
+                            "Приятного прослушивания!" + "\n\n" +
+                            "/add - добавить трек в очередь\n" +
+                            "/undo - отменить добавление трека");
+        }
+
+        else if (update.getMessage().isUserMessage()) {
             // Если update не имеет inlineQuery, значит, пользователь отправил код для авторизации
             Message msg = update.getMessage();
             User user = update.getMessage().getFrom();
