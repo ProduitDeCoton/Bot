@@ -34,6 +34,7 @@ public final class BotLogic extends TelegramLongPollingCommandBot {
         register(new HelpCommand("help","Помощь"));
         register(new AuthCommand("auth", "Авторизация в Spotify"));
         register(new GroupCommand("group", "Создание групповой сессии"));
+        register(new AddCommand("add", "Добавить трек в очередь"));
     }
 
     @Override
