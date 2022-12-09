@@ -6,6 +6,7 @@ import inline_query_commands.GetLikedSongsPlaylist;
 import org.telegram.telegrambots.extensions.bots.commandbot.TelegramLongPollingCommandBot;
 import org.telegram.telegrambots.meta.api.methods.AnswerInlineQuery;
 import org.telegram.telegrambots.meta.api.methods.send.SendMessage;
+import org.telegram.telegrambots.meta.api.objects.Chat;
 import org.telegram.telegrambots.meta.api.objects.Message;
 import org.telegram.telegrambots.meta.api.objects.Update;
 import org.telegram.telegrambots.meta.api.objects.User;
@@ -13,6 +14,7 @@ import org.telegram.telegrambots.meta.api.objects.inlinequery.inputmessageconten
 import org.telegram.telegrambots.meta.api.objects.inlinequery.result.InlineQueryResult;
 import org.telegram.telegrambots.meta.api.objects.inlinequery.result.InlineQueryResultArticle;
 import org.telegram.telegrambots.meta.exceptions.TelegramApiException;
+import spotify.exceptions.SpotifyActionFailedException;
 import spotifyTools.SpotifyGroup;
 
 import java.util.ArrayList;
@@ -59,15 +61,24 @@ public final class BotLogic extends TelegramLongPollingCommandBot {
 
         else if (update.hasCallbackQuery()) {
             User leader = update.getCallbackQuery().getFrom();
+            Chat chat = update.getCallbackQuery().getMessage().getChat();
 
-            ActiveGroups.createGroup(leader);
-            ActiveGroups.getGroupSession(leader).transferPlayback(update.getCallbackQuery().getData());
+            ActiveGroups.createGroup(leader, chat);
+
+            try {
+                ActiveGroups.getGroupSession(chat).transferPlayback(update.getCallbackQuery().getData());
+            } catch (SpotifyActionFailedException e) {
+                ActiveGroups.closeGroupSession(chat);
+                setAnswer(update.getCallbackQuery().getMessage().getChatId(),
+                        "Похоже, у лидера отсутствует подписка Spotify Premium. Групповая сессия закрыта.\n\n" +
+                                "Попробуйте создать группу с другим лидером, у которого оплачена подписка.");
+                return;
+            }
 
             setAnswer(update.getCallbackQuery().getMessage().getChatId(),
                     "Устройство " + update.getCallbackQuery().getData() + " выбрано. " +
                             "Приятного прослушивания!" + "\n\n" +
-                            "/add - добавить трек в очередь\n" +
-                            "/undo - отменить добавление трека");
+                            "/add - добавить трек в очередь");
         }
 
         else if (update.getMessage().isUserMessage()) {
@@ -115,8 +126,9 @@ public final class BotLogic extends TelegramLongPollingCommandBot {
             cacheTime = 60;
         } else {
             InputTextMessageContent message = new InputTextMessageContent();
-            message.setMessageText("Wrong Command");
-            inlineQueryResults.add(new InlineQueryResultArticle("Wrong Query", "Test", message));
+            message.setMessageText("Неправильная команда\n\nДля просмотра доступных команд" +
+                    " используйте /help в чате со мной");
+            inlineQueryResults.add(new InlineQueryResultArticle("Wrong Query", "Ожидание команды...", message));
             cacheTime = 3;
         }
         // Добавлять объекты с результатами ниже
