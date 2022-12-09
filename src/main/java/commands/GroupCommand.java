@@ -25,7 +25,7 @@ public class GroupCommand extends ServiceCommand {
 
         if (ActiveUsers.getSession(user) == null) {
             sendAnswer(absSender, chat.getId(), this.getCommandIdentifier(), userName,
-                    userName + ", пожалуйста, авторизуйтесь в Spotify в личных сообщениях со мной." +
+                    "Пожалуйста, авторизуйтесь в Spotify в личных сообщениях со мной." +
                     "\n\n" + "Для этого введите в чат со мной команду /auth");
             return;
         }
