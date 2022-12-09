@@ -37,6 +37,13 @@ public class GroupCommand extends ServiceCommand {
 
         var devices = ActiveUsers.getSession(user).getSpotifyApi().getAvailableDevices().getDevices();
 
+        if (devices.size() == 0) {
+            sendAnswer(absSender, chat.getId(), this.getCommandIdentifier(), userName,
+                    "Spotify не запущен ни на одном устройстве. Пожалуйста, запустите " +
+                            "приложение и повторите попытку");
+            return;
+        }
+
         InlineKeyboardMarkup keyboardMarkup = new InlineKeyboardMarkup();
         List<List<InlineKeyboardButton>> keyboardRows = new ArrayList<>();
 
