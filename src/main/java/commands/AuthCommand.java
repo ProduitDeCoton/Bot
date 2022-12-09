@@ -17,7 +17,6 @@ public class AuthCommand extends ServiceCommand {
 
     @Override
     public void execute(AbsSender absSender, User user, Chat chat, String[] strings) {
-
         var session = ActiveUsers.getSession(user);
 
         if (session == null) {
