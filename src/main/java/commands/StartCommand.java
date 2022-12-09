@@ -18,8 +18,10 @@ public class StartCommand extends ServiceCommand {
 
     @Override
     public void execute(AbsSender absSender, User user, Chat chat, String[] strings) {
+
         String userName = (user.getUserName() != null) ? user.getUserName() :
                 String.format("%s %s", user.getLastName(), user.getFirstName());
+
         sendAnswer(absSender, chat.getId(), this.getCommandIdentifier(), userName,
                 "Привет, давай начнём! Для начала тебе необходимо пройти аутентификацию для этого нажми /auth\n" +
                         "\n" +

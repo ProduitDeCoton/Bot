@@ -1,9 +1,6 @@
 package logic;
 
-import commands.AuthCommand;
-import commands.HelpCommand;
-import commands.NonCommand;
-import commands.StartCommand;
+import commands.*;
 import inline_query_commands.GetCurrentPlayingObject;
 import inline_query_commands.GetLikedSongsPlaylist;
 import org.telegram.telegrambots.extensions.bots.commandbot.TelegramLongPollingCommandBot;
@@ -16,6 +13,7 @@ import org.telegram.telegrambots.meta.api.objects.inlinequery.inputmessageconten
 import org.telegram.telegrambots.meta.api.objects.inlinequery.result.InlineQueryResult;
 import org.telegram.telegrambots.meta.api.objects.inlinequery.result.InlineQueryResultArticle;
 import org.telegram.telegrambots.meta.exceptions.TelegramApiException;
+import spotifyTools.SpotifyGroup;
 
 import java.util.ArrayList;
 
@@ -35,6 +33,7 @@ public final class BotLogic extends TelegramLongPollingCommandBot {
         register(new StartCommand("start", "Старт"));
         register(new HelpCommand("help","Помощь"));
         register(new AuthCommand("auth", "Авторизация в Spotify"));
+        register(new GroupCommand("group", "Создание групповой сессии"));
     }
 
     @Override
@@ -54,42 +53,23 @@ public final class BotLogic extends TelegramLongPollingCommandBot {
    
     @Override
     public void processNonCommandUpdate(Update update) {
-        if (update.hasInlineQuery()) {
-            var inlineQueryId = update.getInlineQuery().getId();
-            Integer cacheTime;
+        if (update.hasInlineQuery())
+            processInlineQueryUpdate(update);
 
-            ArrayList<InlineQueryResult> inlineQueryResults = new ArrayList<>();
+        else if (update.hasCallbackQuery()) {
+            User leader = update.getCallbackQuery().getFrom();
 
-            if (update.getInlineQuery().getQuery().equals("nowplaying")) {
-                inlineQueryResults.add(new GetCurrentPlayingObject().constructInlineQueryResult(update.getInlineQuery().getFrom(),
-                        "Текущий воспроизводимый трек"));
-                cacheTime = 3;
-            } else if (update.getInlineQuery().getQuery().equals("likedsongs")) {
-                inlineQueryResults.add(new GetLikedSongsPlaylist().constructInlineQueryResult(update.getInlineQuery().getFrom(),
-                        "Ваши сохранённые треки"));
-                cacheTime = 60;
-            } else {
-                InputTextMessageContent message = new InputTextMessageContent();
-                message.setMessageText("Wrong Command");
-                inlineQueryResults.add(new InlineQueryResultArticle("Wrong Query", "Test", message));
-                cacheTime = 3;
-            }
-            // Добавлять объекты с результатами ниже
+            ActiveGroups.createGroup(leader);
+            ActiveGroups.getGroupSession(leader).transferPlayback(update.getCallbackQuery().getData());
 
-            AnswerInlineQuery answerInlineQuery = AnswerInlineQuery.builder()
-                    .inlineQueryId(inlineQueryId)
-                    .cacheTime(cacheTime)
-                    .results(inlineQueryResults)
-                    .isPersonal(true)
-                    .build();
-            try {
-                this.execute(answerInlineQuery);
-            } catch (TelegramApiException e) {
-                System.out.println("TelegramApiException");
-                e.printStackTrace();
-            }
+            setAnswer(update.getCallbackQuery().getMessage().getChatId(),
+                    "Устройство " + update.getCallbackQuery().getData() + " выбрано. " +
+                            "Приятного прослушивания!" + "\n\n" +
+                            "/add - добавить трек в очередь\n" +
+                            "/undo - отменить добавление трека");
         }
-        else {
+
+        else if (update.getMessage().isUserMessage()) {
             // Если update не имеет inlineQuery, значит, пользователь отправил код для авторизации
             Message msg = update.getMessage();
             User user = update.getMessage().getFrom();
@@ -111,6 +91,43 @@ public final class BotLogic extends TelegramLongPollingCommandBot {
         answer.setChatId(chatId.toString());
         try {
             execute(answer);
+        } catch (TelegramApiException e) {
+            System.out.println("TelegramApiException");
+            e.printStackTrace();
+        }
+    }
+
+
+    public void processInlineQueryUpdate(Update update) {
+        var inlineQueryId = update.getInlineQuery().getId();
+        Integer cacheTime;
+
+        ArrayList<InlineQueryResult> inlineQueryResults = new ArrayList<>();
+
+        if (update.getInlineQuery().getQuery().equals("nowplaying")) {
+            inlineQueryResults.add(new GetCurrentPlayingObject().constructInlineQueryResult(update.getInlineQuery().getFrom(),
+                    "Текущий воспроизводимый трек"));
+            cacheTime = 3;
+        } else if (update.getInlineQuery().getQuery().equals("likedsongs")) {
+            inlineQueryResults.add(new GetLikedSongsPlaylist().constructInlineQueryResult(update.getInlineQuery().getFrom(),
+                    "Ваши сохранённые треки"));
+            cacheTime = 60;
+        } else {
+            InputTextMessageContent message = new InputTextMessageContent();
+            message.setMessageText("Wrong Command");
+            inlineQueryResults.add(new InlineQueryResultArticle("Wrong Query", "Test", message));
+            cacheTime = 3;
+        }
+        // Добавлять объекты с результатами ниже
+
+        AnswerInlineQuery answerInlineQuery = AnswerInlineQuery.builder()
+                .inlineQueryId(inlineQueryId)
+                .cacheTime(cacheTime)
+                .results(inlineQueryResults)
+                .isPersonal(true)
+                .build();
+        try {
+            this.execute(answerInlineQuery);
         } catch (TelegramApiException e) {
             System.out.println("TelegramApiException");
             e.printStackTrace();
