@@ -12,6 +12,9 @@ import org.telegram.telegrambots.meta.exceptions.TelegramApiException;
 import java.util.ArrayList;
 import java.util.List;
 
+/**
+ * Обработка сообщений с командой создания групповой сессии.
+ */
 public class GroupCommand extends ServiceCommand {
 
     public GroupCommand(String identifier, String description) {
@@ -25,15 +28,19 @@ public class GroupCommand extends ServiceCommand {
 
         if (chat.getType().equals("private")) {
             sendAnswer(absSender, chat.getId(), this.getCommandIdentifier(), userName,
-                    "Похоже, вы пытаетесь создать групповую сессию в личном чате.\n\n" +
-                            "Создайте групповую сессию в чате со своими друзьями.");
+                    new StringBuilder()
+                            .append("Похоже, вы пытаетесь создать групповую сессию в личном чате.")
+                            .append("\n\n")
+                            .append("Создайте групповую сессию в чате со своими друзьями.").toString());
             return;
         }
 
         if (ActiveUsers.getSession(user) == null) {
             sendAnswer(absSender, chat.getId(), this.getCommandIdentifier(), userName,
-                    "Пожалуйста, авторизуйтесь в Spotify в личных сообщениях со мной." +
-                    "\n\n" + "Для этого введите в чат со мной команду /auth");
+                    new StringBuilder()
+                            .append("Пожалуйста, авторизуйтесь в Spotify в личных сообщениях со мной.")
+                            .append("\n\n")
+                            .append("Для этого введите в чат со мной команду /auth").toString());
             return;
         }
 
@@ -46,8 +53,10 @@ public class GroupCommand extends ServiceCommand {
 
         if (devices.size() == 0) {
             sendAnswer(absSender, chat.getId(), this.getCommandIdentifier(), userName,
-                    "Spotify не запущен ни на одном устройстве. Пожалуйста, запустите " +
-                            "приложение и повторите попытку");
+
+                    new StringBuilder()
+                            .append("Spotify не запущен ни на одном устройстве. ")
+                            .append("Пожалуйста, запустите приложение и повторите попытку.").toString());
             return;
         }
 

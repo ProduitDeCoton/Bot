@@ -37,7 +37,7 @@ public class AuthCommand extends ServiceCommand {
         }
 
         String redirectLink = session.buildAuthorizationCodeFlow();
-                //.replace("_", "\\_");
+        //.replace("_", "\\_");
 
         userName = userName.replace("_", "\\_");
         sendAnswer(absSender, chat.getId(), this.getCommandIdentifier(), userName,
