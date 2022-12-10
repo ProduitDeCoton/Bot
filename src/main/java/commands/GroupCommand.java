@@ -12,12 +12,38 @@ import org.telegram.telegrambots.meta.exceptions.TelegramApiException;
 import java.util.ArrayList;
 import java.util.List;
 
+/**
+ * Обработка сообщений, содержащих обращение к команде создания групповой сессии.
+ */
 public class GroupCommand extends ServiceCommand {
 
-    public GroupCommand(String identifier, String description) {
+    /**
+     * Зарегистрировать команду создания групповой сессии.
+     *
+     * @param identifier  уникальное название команды.
+     * @param description описание команды.
+     */
+    public GroupCommand(final String identifier, final String description) {
         super(identifier, description);
     }
 
+    /**
+     * Сформировать обращение к пользователю.
+     * Никнейм первичен. Если ник не установлен, обращаемся по имени и фамилии.
+     */
+    private String getUserAppeal(final User user) {
+        final String appeal = user.getUserName();
+
+        if (appeal == null) {
+            return String.format("%s %s", user.getFirstName(), user.getLastName());
+        }
+
+        return appeal;
+    }
+
+    /**
+     * Обработка команды создания группового прослушивания.
+     */
     @Override
     public void execute(AbsSender absSender, User user, Chat chat, String[] strings) {
 
@@ -43,7 +69,6 @@ public class GroupCommand extends ServiceCommand {
             ActiveUsers.getSession(user).authorizeByRefreshToken();
         }
 
-
         var devices = ActiveUsers.getSession(user).getSpotifyApi().getAvailableDevices().getDevices();
 
         if (devices.size() == 0) {
@@ -53,11 +78,12 @@ public class GroupCommand extends ServiceCommand {
             return;
         }
 
-        InlineKeyboardMarkup keyboardMarkup = new InlineKeyboardMarkup();
-        List<List<InlineKeyboardButton>> keyboardRows = new ArrayList<>();
+        final var keyboardMarkup = new InlineKeyboardMarkup();
+        final var keyboardRows = new ArrayList<List<InlineKeyboardButton>>();
 
-        for (var device : devices) {
-            InlineKeyboardButton keyboardButton = new InlineKeyboardButton();
+        for (final var device : devices) {
+            final InlineKeyboardButton keyboardButton = new InlineKeyboardButton();
+
             keyboardButton.setText(device.getName());
             keyboardButton.setCallbackData(device.getName());
 
@@ -66,13 +92,14 @@ public class GroupCommand extends ServiceCommand {
 
         keyboardMarkup.setKeyboard(keyboardRows);
 
-        SendMessage message = new SendMessage();
+        final SendMessage message = new SendMessage();
         message.setChatId(chat.getId().toString());
         message.setText("Выберите устройство для воспроизведения:");
         message.setReplyMarkup(keyboardMarkup);
+
         try {
             absSender.execute(message);
-        } catch (TelegramApiException e) {
+        } catch (final TelegramApiException e) {
             e.printStackTrace();
         }
     }

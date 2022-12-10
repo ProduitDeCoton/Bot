@@ -11,14 +11,37 @@ import spotifyTools.SpotifySession;
  * её пользователю.
  */
 public class AuthCommand extends ServiceCommand {
-    public AuthCommand(String identifier, String description) {
+
+    /**
+     * Зарегистрировать команду авторизации.
+     *
+     * @param identifier  уникальное название команды.
+     * @param description описание команды.
+     */
+    public AuthCommand(final String identifier, final String description) {
         super(identifier, description);
     }
 
+    /**
+     * Сформировать обращение к пользователю.
+     * Никнейм первичен. Если ник не установлен, обращаемся по имени и фамилии.
+     */
+    private String getUserAppeal(final User user) {
+        final String appeal = user.getUserName();
+
+        if (appeal == null) {
+            return String.format("%s %s", user.getFirstName(), user.getLastName());
+        }
+
+        return appeal;
+    }
+
+    /**
+     * Обработка команды авторизации.
+     */
     @Override
-    public void execute(AbsSender absSender, User user, Chat chat, String[] strings) {
-        String userName = (user.getUserName() != null) ? user.getUserName() :
-                String.format("%s %s", user.getLastName(), user.getFirstName());
+    public void execute(final AbsSender absSender, final User user, final Chat chat, final String[] args) {
+        final String userAppeal = getUserAppeal(user);
 
         if (!chat.getType().equals("private")) {
             sendAnswer(absSender, chat.getId(),
@@ -38,12 +61,11 @@ public class AuthCommand extends ServiceCommand {
             session = ActiveUsers.getSession(user);
         }
 
-        String redirectLink = session.buildAuthorizationCodeFlow();
-                //.replace("_", "\\_");
+        final String redirectLink = session.buildAuthorizationCodeFlow();
+        final String markDownCompatibleUserAppeal = userAppeal.replace("_", "\\_");
 
-        userName = userName.replace("_", "\\_");
         sendAnswer(absSender, chat.getId(),
-                userName + ", пожалуйста, пройдите по ссылке ниже. Пройдите аутентификацию и предоставьте " +
+                markDownCompatibleUserAppeal + ", пожалуйста, пройдите по ссылке ниже. Пройдите аутентификацию и предоставьте " +
                         "разрешения для работы бота." + "\n" + "\n" + "[Пройти авторизацию]" + "(" + redirectLink + ")" + "\n" + "\n" +
                         "После аутентификации в адресной строке появится ссылка с кодом. Отправьте, пожалуйста, " +
                         "всю ссылку целиком.");
