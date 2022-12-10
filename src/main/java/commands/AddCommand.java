@@ -19,13 +19,22 @@ public class AddCommand extends ServiceCommand {
         super(identifier, description);
     }
 
+    private String getUserAppeal(final User user) {
+        final String appeal = user.getUserName();
+
+        if (appeal == null) {
+            return String.format("%s %s", user.getFirstName(), user.getLastName());
+        }
+
+        return appeal;
+    }
+
     @Override
-    public void execute(AbsSender absSender, User user, Chat chat, String[] strings) {
-        String userName = (user.getUserName() != null) ? user.getUserName() :
-                String.format("%s %s", user.getLastName(), user.getFirstName());
+    public void execute(final AbsSender absSender, final User user, final Chat chat, final String[] args) {
+        final String userAppeal = getUserAppeal(user);
 
         if (ActiveGroups.getGroupSession(chat) == null) {
-            sendAnswer(absSender, chat.getId(), this.getCommandIdentifier(), userName,
+            sendAnswer(absSender, chat.getId(), this.getCommandIdentifier(), userAppeal,
                     new StringBuilder()
                             .append("Групповая музыкальная сессия в этом чате не создана.")
                             .append("\n\n")
@@ -33,10 +42,10 @@ public class AddCommand extends ServiceCommand {
             return;
         }
 
-        User leader = ActiveGroups.getGroupSession(chat).getLeader();
+        final User leader = ActiveGroups.getGroupSession(chat).getLeader();
 
         if (ActiveUsers.getSession(leader) == null) {
-            sendAnswer(absSender, chat.getId(), this.getCommandIdentifier(), userName,
+            sendAnswer(absSender, chat.getId(), this.getCommandIdentifier(), userAppeal,
                     new StringBuilder()
                             .append("Пожалуйста, авторизуйтесь в Spotify в личных сообщениях со мной.")
                             .append("\n\n")
@@ -44,37 +53,37 @@ public class AddCommand extends ServiceCommand {
             return;
         }
 
-        if (ActiveUsers.getSession(leader).getTokenExpiresIn() < 30) {
+        if (ActiveUsers.getSession(leader).getTokenExpiresIn() <= 30) {
             ActiveUsers.getSession(leader).authorizeByRefreshToken();
         }
 
-        Map<String, String> properties = Map.of(
+        final Map<String, String> properties = Map.of(
                 "market", "TR",
                 "limit", "1"
         );
 
-        List<QueryType> types = List.of(QueryType.TRACK);
+        final List<QueryType> types = List.of(QueryType.TRACK);
+        final StringBuilder search = new StringBuilder();
 
-        StringBuilder search = new StringBuilder();
-
-        for (String commandArgument : strings) {
-            search.append(commandArgument);
+        for (final String arg : args) {
+            search.append(arg);
             search.append(" ");
         }
 
-        var tracks = ActiveUsers.getSession(leader)
+        final var tracks = ActiveUsers.getSession(leader)
                 .getSpotifyApi()
                 .searchItem(search.toString(), types, properties)
                 .getTracks()
                 .getItems();
 
-        var foundTrack = tracks.get(0);
+        final var foundTrack = tracks.get(0);
 
         try {
             ActiveUsers.getSession(leader).getSpotifyApi().addItemToQueue(foundTrack.getUri(), null);
+
         } catch (SpotifyActionFailedException e) {
             ActiveGroups.closeGroupSession(chat);
-            sendAnswer(absSender, chat.getId(), this.getCommandIdentifier(), userName,
+            sendAnswer(absSender, chat.getId(), this.getCommandIdentifier(), userAppeal,
                     new StringBuilder()
                             .append("Похоже, у лидера отсутствует подписка Spotify Premium. ")
                             .append("Групповая сессия закрыта.")
@@ -83,7 +92,7 @@ public class AddCommand extends ServiceCommand {
             return;
         }
 
-        sendAnswer(absSender, chat.getId(), this.getCommandIdentifier(), userName,
+        sendAnswer(absSender, chat.getId(), this.getCommandIdentifier(), userAppeal,
                 String.format("[%s — %s](%s) добавлена в очередь",
                         foundTrack.getName(),
                         foundTrack.getArtists().get(0).getName(),

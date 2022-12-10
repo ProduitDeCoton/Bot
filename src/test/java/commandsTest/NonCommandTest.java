@@ -8,7 +8,7 @@ import exceptions.WrongAuthRedirectUriException;
 import org.telegram.telegrambots.meta.api.objects.User;
 
 public class NonCommandTest {
-    final String uriBase = "http://localhost:8080/auth/spotify/redirect";
+    private static final String uriBase = "http://localhost:8080/auth/spotify/redirect";
 
     @Test
     public void checkWhenTextNull() {
