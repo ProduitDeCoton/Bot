@@ -2,16 +2,11 @@ package commands;
 
 import logic.ActiveGroups;
 import logic.ActiveUsers;
-import org.telegram.telegrambots.meta.api.methods.send.SendMessage;
 import org.telegram.telegrambots.meta.api.objects.Chat;
 import org.telegram.telegrambots.meta.api.objects.User;
 import org.telegram.telegrambots.meta.bots.AbsSender;
 import spotify.api.enums.QueryType;
 import spotify.exceptions.SpotifyActionFailedException;
-import spotify.models.errors.SpotifyError;
-
-import java.util.ArrayList;
-import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
 
@@ -81,7 +76,8 @@ public class AddCommand extends ServiceCommand {
             ActiveGroups.closeGroupSession(chat);
             sendAnswer(absSender, chat.getId(), this.getCommandIdentifier(), userName,
                     new StringBuilder()
-                            .append("Похоже, у лидера отсутствует подписка Spotify Premium. Групповая сессия закрыта.")
+                            .append("Похоже, у лидера отсутствует подписка Spotify Premium. ")
+                            .append("Групповая сессия закрыта.")
                             .append("\n\n")
                             .append("Попробуйте создать группу с другим лидером, у которого оплачена подписка.").toString());
             return;

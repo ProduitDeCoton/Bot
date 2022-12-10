@@ -22,8 +22,10 @@ public class AuthCommand extends ServiceCommand {
 
         if (!chat.getType().equals("private")) {
             sendAnswer(absSender, chat.getId(), this.getCommandIdentifier(), userName,
-                    "Похоже, вы пытаетесь авторизоваться в публичном чате.\n\n" +
-                            "Пожалуйста, выполняйте авторизацию в личном чате со мной.");
+                    new StringBuilder()
+                            .append("Похоже, вы пытаетесь авторизоваться в публичном чате.")
+                            .append("\n\n")
+                            .append("Пожалуйста, выполняйте авторизацию в личном чате со мной.").toString());
             return;
         }
 

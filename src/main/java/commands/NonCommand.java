@@ -16,7 +16,7 @@ import java.util.regex.Pattern;
 public class NonCommand {
 
     private static final String _authUriBase = "http://localhost:8080/auth/spotify/redirect";
-    private static final Pattern _authCodeMessageаPattern = Pattern.compile(_authUriBase + "\\?code=([-_A-Za-z0-9]+)");
+    private static final Pattern _authCodeMessagePattern = Pattern.compile(_authUriBase + "\\?code=([-_A-Za-z0-9]+)");
 
     /**
      * Вычленить код аутентификации из текста сообщения с Auth Redirect URI.
@@ -29,7 +29,7 @@ public class NonCommand {
             throw new WrongAuthRedirectUriException();
         }
 
-        final Matcher matcher = _authCodeMessageаPattern.matcher(authRedirectUri);
+        final Matcher matcher = _authCodeMessagePattern.matcher(authRedirectUri);
 
         if (matcher.find()) {
             return matcher.group(1);
@@ -42,7 +42,10 @@ public class NonCommand {
         String answer;
 
         if (text == null) {
-            return "Простите, я не понимаю Вас. Похоже, что Вы ввели сообщение, не соответствующее формату. Возможно, Вам поможет /help";
+            return new StringBuilder()
+                    .append("Простите, я не понимаю Вас. ")
+                    .append("Похоже, что Вы ввели сообщение, не соответствующее формату. ")
+                    .append("Возможно, Вам поможет /help").toString();
         }
 
         try {
