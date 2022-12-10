@@ -15,7 +15,6 @@ import org.telegram.telegrambots.meta.api.objects.inlinequery.result.InlineQuery
 import org.telegram.telegrambots.meta.api.objects.inlinequery.result.InlineQueryResultArticle;
 import org.telegram.telegrambots.meta.exceptions.TelegramApiException;
 import spotify.exceptions.SpotifyActionFailedException;
-import spotifyTools.SpotifyGroup;
 
 import java.util.ArrayList;
 
@@ -116,22 +115,25 @@ public final class BotLogic extends TelegramLongPollingCommandBot {
 
         ArrayList<InlineQueryResult> inlineQueryResults = new ArrayList<>();
 
-        if (update.getInlineQuery().getQuery().equals("nowplaying")) {
-            inlineQueryResults.add(new GetCurrentPlayingObject().constructInlineQueryResult(update.getInlineQuery().getFrom(),
-                    "Текущий воспроизводимый трек"));
-            cacheTime = 3;
-        } else if (update.getInlineQuery().getQuery().equals("likedsongs")) {
-            inlineQueryResults.add(new GetLikedSongsPlaylist().constructInlineQueryResult(update.getInlineQuery().getFrom(),
-                    "Ваши сохранённые треки"));
-            cacheTime = 60;
-        } else {
-            InputTextMessageContent message = new InputTextMessageContent();
-            message.setMessageText("Неправильная команда\n\nДля просмотра доступных команд" +
-                    " используйте /help в чате со мной");
-            inlineQueryResults.add(new InlineQueryResultArticle("Wrong Query", "Ожидание команды...", message));
-            cacheTime = 3;
+        switch (update.getInlineQuery().getQuery()) {
+            case "nowplaying" -> {
+                inlineQueryResults.add(new GetCurrentPlayingObject().constructInlineQueryResult(update.getInlineQuery().getFrom(),
+                        "Текущий воспроизводимый трек"));
+                cacheTime = 3;
+            }
+            case "likedsongs" -> {
+                inlineQueryResults.add(new GetLikedSongsPlaylist().constructInlineQueryResult(update.getInlineQuery().getFrom(),
+                        "Ваши сохранённые треки"));
+                cacheTime = 60;
+            }
+            default -> {
+                InputTextMessageContent message = new InputTextMessageContent();
+                message.setMessageText("Неправильная команда\n\nДля просмотра доступных команд" +
+                        " используйте /help в чате со мной");
+                inlineQueryResults.add(new InlineQueryResultArticle("Wrong Query", "Ожидание команды...", message));
+                cacheTime = 3;
+            }
         }
-        // Добавлять объекты с результатами ниже
 
         AnswerInlineQuery answerInlineQuery = AnswerInlineQuery.builder()
                 .inlineQueryId(inlineQueryId)
