@@ -11,10 +11,15 @@ import spotifyTools.SpotifySession;
  * её пользователю.
  */
 public class AuthCommand extends ServiceCommand {
-    public AuthCommand(String identifier, String description) {
+    public AuthCommand(final String identifier, final String description) {
         super(identifier, description);
     }
 
+    /**
+     * Сформировать обращение к пользователю.
+     *
+     * @param user телеграмовский пользователь
+     */
     private String getUserAppeal(final User user) {
         final String appeal = user.getUserName();
 

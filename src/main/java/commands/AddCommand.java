@@ -19,6 +19,11 @@ public class AddCommand extends ServiceCommand {
         super(identifier, description);
     }
 
+    /**
+     * Сформировать обращение к пользователю.
+     *
+     * @param user телеграмовский пользователь
+     */
     private String getUserAppeal(final User user) {
         final String appeal = user.getUserName();
 
