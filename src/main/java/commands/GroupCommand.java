@@ -48,7 +48,6 @@ public class GroupCommand extends ServiceCommand {
             ActiveUsers.getSession(user).authorizeByRefreshToken();
         }
 
-
         var devices = ActiveUsers.getSession(user).getSpotifyApi().getAvailableDevices().getDevices();
 
         if (devices.size() == 0) {

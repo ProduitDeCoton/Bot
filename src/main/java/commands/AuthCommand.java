@@ -15,13 +15,22 @@ public class AuthCommand extends ServiceCommand {
         super(identifier, description);
     }
 
+    private String getUserAppeal(final User user) {
+        final String appeal = user.getUserName();
+
+        if (appeal == null) {
+            return String.format("%s %s", user.getFirstName(), user.getLastName());
+        }
+
+        return appeal;
+    }
+
     @Override
-    public void execute(AbsSender absSender, User user, Chat chat, String[] strings) {
-        String userName = (user.getUserName() != null) ? user.getUserName() :
-                String.format("%s %s", user.getLastName(), user.getFirstName());
+    public void execute(final AbsSender absSender, final User user, final Chat chat, final String[] args) {
+        final String userAppeal = getUserAppeal(user);
 
         if (!chat.getType().equals("private")) {
-            sendAnswer(absSender, chat.getId(), this.getCommandIdentifier(), userName,
+            sendAnswer(absSender, chat.getId(), this.getCommandIdentifier(), userAppeal,
                     new StringBuilder()
                             .append("Похоже, вы пытаетесь авторизоваться в публичном чате.")
                             .append("\n\n")
@@ -38,14 +47,17 @@ public class AuthCommand extends ServiceCommand {
             session = ActiveUsers.getSession(user);
         }
 
-        String redirectLink = session.buildAuthorizationCodeFlow();
-        //.replace("_", "\\_");
+        final String redirectLink = session.buildAuthorizationCodeFlow();
+        final String markDownCompatibleUserAppeal = userAppeal.replace("_", "\\_");
 
-        userName = userName.replace("_", "\\_");
-        sendAnswer(absSender, chat.getId(), this.getCommandIdentifier(), userName,
-                userName + ", пожалуйста, пройдите по ссылке ниже. Пройдите аутентификацию и предоставьте " +
-                        "разрешения для работы бота." + "\n" + "\n" + "[Пройти авторизацию]" + "(" + redirectLink + ")" + "\n" + "\n" +
-                        "После аутентификации в адресной строке появится ссылка с кодом. Отправьте, пожалуйста, " +
-                        "всю ссылку целиком.");
+        sendAnswer(absSender, chat.getId(), this.getCommandIdentifier(), userAppeal,
+                new StringBuilder()
+                        .append(String.format("%s, пожалуйста, пройдите по ссылке ниже. ", markDownCompatibleUserAppeal))
+                        .append("Пройдите аутентификацию и предоставьте разрешения для работы бота.")
+                        .append("\n\n")
+                        .append(String.format("[Пройти авторизацию](%s)", redirectLink))
+                        .append("\n\n")
+                        .append("После аутентификации в адресной строке появится ссылка с кодом. ")
+                        .append("Отправьте, пожалуйста, всю ссылку целиком").toString());
     }
 }
