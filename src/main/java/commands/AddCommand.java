@@ -28,6 +28,7 @@ public class AddCommand extends ServiceCommand {
 
     /**
      * Сформировать обращение к пользователю.
+     * Никнейм первичен. Если ник не установлен, обращаемся по имени и фамилии.
      */
     private String getUserAppeal(final User user) {
         final String appeal = user.getUserName();

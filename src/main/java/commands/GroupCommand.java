@@ -23,12 +23,13 @@ public class GroupCommand extends ServiceCommand {
      * @param identifier  уникальное название команды.
      * @param description описание команды.
      */
-    public GroupCommand(String identifier, String description) {
+    public GroupCommand(final String identifier, final String description) {
         super(identifier, description);
     }
 
     /**
      * Сформировать обращение к пользователю.
+     * Никнейм первичен. Если ник не установлен, обращаемся по имени и фамилии.
      */
     private String getUserAppeal(final User user) {
         final String appeal = user.getUserName();
@@ -79,8 +80,8 @@ public class GroupCommand extends ServiceCommand {
             return;
         }
 
-        final InlineKeyboardMarkup keyboardMarkup = new InlineKeyboardMarkup();
-        final List<List<InlineKeyboardButton>> keyboardRows = new ArrayList<>();
+        final var keyboardMarkup = new InlineKeyboardMarkup();
+        final var keyboardRows = new ArrayList<List<InlineKeyboardButton>>();
 
         for (final var device : devices) {
             final InlineKeyboardButton keyboardButton = new InlineKeyboardButton();
@@ -100,7 +101,7 @@ public class GroupCommand extends ServiceCommand {
 
         try {
             absSender.execute(message);
-        } catch (TelegramApiException e) {
+        } catch (final TelegramApiException e) {
             e.printStackTrace();
         }
     }
