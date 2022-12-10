@@ -23,6 +23,13 @@ public class GroupCommand extends ServiceCommand {
         String userName = (user.getUserName() != null) ? user.getUserName() :
                 String.format("%s %s", user.getLastName(), user.getFirstName());
 
+        if (chat.getType().equals("private")) {
+            sendAnswer(absSender, chat.getId(), this.getCommandIdentifier(), userName,
+                    "Похоже, вы пытаетесь создать групповую сессию в личном чате.\n\n" +
+                            "Создайте групповую сессию в чате со своими друзьями.");
+            return;
+        }
+
         if (ActiveUsers.getSession(user) == null) {
             sendAnswer(absSender, chat.getId(), this.getCommandIdentifier(), userName,
                     "Пожалуйста, авторизуйтесь в Spotify в личных сообщениях со мной." +
