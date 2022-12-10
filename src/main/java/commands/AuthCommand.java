@@ -17,6 +17,16 @@ public class AuthCommand extends ServiceCommand {
 
     @Override
     public void execute(AbsSender absSender, User user, Chat chat, String[] strings) {
+        String userName = (user.getUserName() != null) ? user.getUserName() :
+                String.format("%s %s", user.getLastName(), user.getFirstName());
+
+        if (!chat.getType().equals("private")) {
+            sendAnswer(absSender, chat.getId(), this.getCommandIdentifier(), userName,
+                    "Похоже, вы пытаетесь авторизоваться в публичном чате.\n\n" +
+                            "Пожалуйста, выполняйте авторизацию в личном чате со мной.");
+            return;
+        }
+
         var session = ActiveUsers.getSession(user);
 
         if (session == null) {
@@ -28,9 +38,6 @@ public class AuthCommand extends ServiceCommand {
 
         String redirectLink = session.buildAuthorizationCodeFlow();
                 //.replace("_", "\\_");
-
-        String userName = (user.getUserName() != null) ? user.getUserName() :
-                String.format("%s %s", user.getLastName(), user.getFirstName());
 
         userName = userName.replace("_", "\\_");
         sendAnswer(absSender, chat.getId(), this.getCommandIdentifier(), userName,
