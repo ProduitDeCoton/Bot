@@ -10,34 +10,56 @@ import org.telegram.telegrambots.meta.bots.AbsSender;
  */
 public class HelpCommand extends ServiceCommand {
 
-    public HelpCommand(String identifier, String description) {
+    /**
+     * Зарегистрировать команду помощи.
+     *
+     * @param identifier  уникальное название команды
+     * @param description описание команды
+     */
+    public HelpCommand(final String identifier, final String description) {
         super(identifier, description);
     }
 
+    /**
+     * Сформировать обращение к пользователю.
+     * Никнейм первичен. Если ник не установлен, обращаемся по имени и фамилии.
+     */
+    private String getUserAppeal(final User user) {
+        final String appeal = user.getUserName();
+
+        if (appeal == null) {
+            return String.format("%s %s", user.getFirstName(), user.getLastName());
+        }
+
+        return appeal;
+    }
+
+    /**
+     * Обработчик команды помощи.
+     */
     @Override
-    public void execute(AbsSender absSender, User user, Chat chat, String[] strings) {
-        String userName = (user.getUserName() != null) ? user.getUserName() :
-                String.format("%s %s", user.getLastName(), user.getFirstName());
-        sendAnswer(absSender, chat.getId(), this.getCommandIdentifier(), userName,
-                """
-                        Я музыкальный бот, для работы со мной вы должны пройти аутентификацию
+    public void execute(final AbsSender absSender, final User user, final Chat chat, final String[] args) {
+        final String userAppeal = getUserAppeal(user);
 
-                        Для этого нажмите /auth
+        sendAnswer(absSender, chat.getId(), this.getCommandIdentifier(), userAppeal, """
+                Я музыкальный бот, для работы со мной вы должны пройти аутентификацию
 
-                        Я могу показать текущий трек, играющий на платформе Spotify
-                        Создать плейлист из сохранённых песен
-                        И работать в групповом режиме, для этого добавьте меня в вашу беседу
-                        ВАЖНО: для корректной работы группового режима требуется Spotify Premium.
+                Для этого нажмите /auth
 
-                        ❗Список команд
-                        /auth - аутентификация в Spotify
-                        /help - помощь
+                Я могу показать текущий трек, играющий на платформе Spotify
+                Создать плейлист из сохранённых песен
+                И работать в групповом режиме, для этого добавьте меня в вашу беседу
+                ВАЖНО: для корректной работы группового режима требуется Spotify Premium.
 
-                        /group - создание групповой сессии
-                        /add (трек) - добавление трека в очередь
+                ❗Список команд
+                /auth - аутентификация в Spotify
+                /help - помощь
 
-                        Команды, вызываемые в любом чате:
-                        @spotify_now_bot likedsongs - создание плейлиста с вашими любимыми треками
-                        @spotify_now_bot nowplaying - ссылка на текущий воспроизводимый трек""");
+                /group - создание групповой сессии
+                /add (трек) - добавление трека в очередь
+
+                Команды, вызываемые в любом чате:
+                @spotify_now_bot likedsongs - создание плейлиста с вашими любимыми треками
+                @spotify_now_bot nowplaying - ссылка на текущий воспроизводимый трек""");
     }
 }

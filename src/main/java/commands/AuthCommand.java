@@ -11,14 +11,19 @@ import spotifyTools.SpotifySession;
  * её пользователю.
  */
 public class AuthCommand extends ServiceCommand {
+
+    /**
+     * Зарегистрировать команду авторизации.
+     *
+     * @param identifier  уникальное название команды.
+     * @param description описание команды.
+     */
     public AuthCommand(final String identifier, final String description) {
         super(identifier, description);
     }
 
     /**
      * Сформировать обращение к пользователю.
-     *
-     * @param user телеграмовский пользователь
      */
     private String getUserAppeal(final User user) {
         final String appeal = user.getUserName();
@@ -30,6 +35,9 @@ public class AuthCommand extends ServiceCommand {
         return appeal;
     }
 
+    /**
+     * Обработка команды авторизации.
+     */
     @Override
     public void execute(final AbsSender absSender, final User user, final Chat chat, final String[] args) {
         final String userAppeal = getUserAppeal(user);

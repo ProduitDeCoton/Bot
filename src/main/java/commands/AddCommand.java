@@ -7,6 +7,7 @@ import org.telegram.telegrambots.meta.api.objects.User;
 import org.telegram.telegrambots.meta.bots.AbsSender;
 import spotify.api.enums.QueryType;
 import spotify.exceptions.SpotifyActionFailedException;
+
 import java.util.List;
 import java.util.Map;
 
@@ -15,14 +16,18 @@ import java.util.Map;
  */
 public class AddCommand extends ServiceCommand {
 
-    public AddCommand(String identifier, String description) {
+    /**
+     * Зарегистрировать команду добавления трека в очередь.
+     *
+     * @param identifier  уникальное название команды.
+     * @param description описание команды.
+     */
+    public AddCommand(final String identifier, final String description) {
         super(identifier, description);
     }
 
     /**
      * Сформировать обращение к пользователю.
-     *
-     * @param user телеграмовский пользователь
      */
     private String getUserAppeal(final User user) {
         final String appeal = user.getUserName();
@@ -34,6 +39,9 @@ public class AddCommand extends ServiceCommand {
         return appeal;
     }
 
+    /**
+     * Обработка команды добавления трека в очередь.
+     */
     @Override
     public void execute(final AbsSender absSender, final User user, final Chat chat, final String[] args) {
         final String userAppeal = getUserAppeal(user);

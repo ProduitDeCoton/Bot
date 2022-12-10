@@ -20,7 +20,7 @@ public class GroupCommand extends ServiceCommand {
     /**
      * Зарегистрировать команду создания групповой сессии.
      *
-     * @param identifier уникальное название команды.
+     * @param identifier  уникальное название команды.
      * @param description описание команды.
      */
     public GroupCommand(String identifier, String description) {
@@ -29,8 +29,6 @@ public class GroupCommand extends ServiceCommand {
 
     /**
      * Сформировать обращение к пользователю.
-     *
-     * @param user телеграмовский пользователь
      */
     private String getUserAppeal(final User user) {
         final String appeal = user.getUserName();
@@ -42,6 +40,9 @@ public class GroupCommand extends ServiceCommand {
         return appeal;
     }
 
+    /**
+     * Обработка команды создания группового прослушивания.
+     */
     @Override
     public void execute(final AbsSender absSender, final User user, final Chat chat, final String[] args) {
         final String userAppeal = getUserAppeal(user);
@@ -78,8 +79,8 @@ public class GroupCommand extends ServiceCommand {
             return;
         }
 
-        InlineKeyboardMarkup keyboardMarkup = new InlineKeyboardMarkup();
-        List<List<InlineKeyboardButton>> keyboardRows = new ArrayList<>();
+        final InlineKeyboardMarkup keyboardMarkup = new InlineKeyboardMarkup();
+        final List<List<InlineKeyboardButton>> keyboardRows = new ArrayList<>();
 
         for (final var device : devices) {
             final InlineKeyboardButton keyboardButton = new InlineKeyboardButton();
