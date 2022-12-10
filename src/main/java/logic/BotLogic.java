@@ -59,29 +59,11 @@ public final class BotLogic extends TelegramLongPollingCommandBot {
             processInlineQueryUpdate(update);
 
         else if (update.hasCallbackQuery()) {
-            User leader = update.getCallbackQuery().getFrom();
-            Chat chat = update.getCallbackQuery().getMessage().getChat();
-
-            ActiveGroups.createGroup(leader, chat);
-
-            try {
-                ActiveGroups.getGroupSession(chat).transferPlayback(update.getCallbackQuery().getData());
-            } catch (SpotifyActionFailedException e) {
-                ActiveGroups.closeGroupSession(chat);
-                setAnswer(update.getCallbackQuery().getMessage().getChatId(),
-                        "Похоже, у лидера отсутствует подписка Spotify Premium. Групповая сессия закрыта.\n\n" +
-                                "Попробуйте создать группу с другим лидером, у которого оплачена подписка.");
-                return;
-            }
-
-            setAnswer(update.getCallbackQuery().getMessage().getChatId(),
-                    "Устройство " + update.getCallbackQuery().getData() + " выбрано. " +
-                            "Приятного прослушивания!" + "\n\n" +
-                            "/add - добавить трек в очередь");
+            processCreatingGroup(update);
         }
 
         else if (update.getMessage().isUserMessage()) {
-            // Если update не имеет inlineQuery, значит, пользователь отправил код для авторизации
+            // Если зашли в этот if, значит, пользователь отправил код для авторизации
             Message msg = update.getMessage();
             User user = update.getMessage().getFrom();
             Long chatId = msg.getChatId();
@@ -90,6 +72,7 @@ public final class BotLogic extends TelegramLongPollingCommandBot {
             setAnswer(chatId, answer);
         }
     }
+
 
     /**
      * Отправка ответа
@@ -147,6 +130,28 @@ public final class BotLogic extends TelegramLongPollingCommandBot {
             System.out.println("TelegramApiException");
             e.printStackTrace();
         }
+    }
+
+    public void processCreatingGroup(Update update) {
+        User leader = update.getCallbackQuery().getFrom();
+        Chat chat = update.getCallbackQuery().getMessage().getChat();
+
+        ActiveGroups.createGroup(leader, chat);
+
+        try {
+            ActiveGroups.getGroupSession(chat).transferPlayback(update.getCallbackQuery().getData());
+        } catch (SpotifyActionFailedException e) {
+            ActiveGroups.closeGroupSession(chat);
+            setAnswer(update.getCallbackQuery().getMessage().getChatId(),
+                    "Похоже, у лидера отсутствует подписка Spotify Premium. Групповая сессия закрыта.\n\n" +
+                            "Попробуйте создать группу с другим лидером, у которого оплачена подписка.");
+            return;
+        }
+
+        setAnswer(update.getCallbackQuery().getMessage().getChatId(),
+                "Устройство " + update.getCallbackQuery().getData() + " выбрано. " +
+                        "Приятного прослушивания!" + "\n\n" +
+                        "/add - добавить трек в очередь");
     }
 
 }
