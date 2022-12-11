@@ -11,24 +11,25 @@ import java.util.regex.Matcher;
 import java.util.regex.Pattern;
 
 /**
- * Класс для обработки сообщений, вероятно содержащих код
- * для получения токенов.
+ * Класс обработки сообщений с Auth Redirect URI.
  */
 public class NonCommand {
 
+    private static final String _authUriBase = "http://localhost:8080/auth/spotify/redirect";
+    private static final Pattern _authCodeMessagePattern = Pattern.compile(_authUriBase + "\\?code=([-_A-Za-z0-9]+)");
+
     /**
-     * @param authRedirectUri сообщение, вероятно содержащее аутентификационный код
-     * @throws WrongAuthRedirectUriException строка не соответствует шаблону аутентификационного сообщения
+     * Вычленить код аутентификации из текста сообщения с Auth Redirect URI.
+     *
+     * @throws WrongAuthRedirectUriException строка не содержит корректный Auth Redirect URI.
      */
-    public static String getCode(String authRedirectUri) throws WrongAuthRedirectUriException {
+    public static String getCode(final String authRedirectUri) throws WrongAuthRedirectUriException {
 
         if (authRedirectUri == null) {
             throw new WrongAuthRedirectUriException();
         }
 
-        final String uriBase = "http://localhost:8080/auth/spotify/redirect";
-        final Pattern pattern = Pattern.compile(uriBase + "\\?code=([-_A-Za-z0-9]+)");
-        final Matcher matcher = pattern.matcher(authRedirectUri);
+        final Matcher matcher = _authCodeMessagePattern.matcher(authRedirectUri);
 
         if (matcher.find()) {
             return matcher.group(1);
@@ -41,22 +42,27 @@ public class NonCommand {
         String answer;
 
         if (text == null) {
-            answer = "Простите, я не понимаю Вас. Похоже, что Вы ввели сообщение, не соответствующее формату. Возможно, Вам поможет /help";
-            return answer;
+            return new StringBuilder()
+                    .append("Простите, я не понимаю Вас. ")
+                    .append("Похоже, что Вы ввели сообщение, не соответствующее формату. ")
+                    .append("Возможно, Вам поможет /help").toString();
         }
 
         try {
-            String code = getCode(text);
-            SpotifySession session = ActiveUsers.getSession(user);
+            final String code = getCode(text);
+            final SpotifySession session = ActiveUsers.getSession(user);
             session.authorizeByCode(code);
 
             ActiveUsers.updateActiveUsers(user, session);
-            answer = session.getSpotifyApi().getCurrentUser().getDisplayName() + ", вы успешно авторизовались!";
+            answer = String.format("%s, вы успешно авторизовались.", session.getSpotifyApi().getCurrentUser().getDisplayName());
+
         } catch (WrongAuthRedirectUriException e) {
-            answer = "Похоже, вы неправильно ввели ссылку, попробуйте ещё раз";
+            answer = "Похоже, вы неправильно ввели ссылку, попробуйте ещё раз.";
+
         } catch (SpotifyAuthorizationFailedException | SpotifyActionFailedException e) {
             answer = "Неверный код. Попробуйте ещё раз.";
         }
+
         return answer;
     }
 }

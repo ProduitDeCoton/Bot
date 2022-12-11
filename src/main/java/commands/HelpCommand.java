@@ -10,16 +10,38 @@ import org.telegram.telegrambots.meta.bots.AbsSender;
  */
 public class HelpCommand extends ServiceCommand {
 
-    public HelpCommand(String identifier, String description) {
+    /**
+     * Зарегистрировать команду помощи.
+     *
+     * @param identifier  уникальное название команды
+     * @param description описание команды
+     */
+    public HelpCommand(final String identifier, final String description) {
         super(identifier, description);
     }
 
+    /**
+     * Сформировать обращение к пользователю.
+     * Никнейм первичен. Если ник не установлен, обращаемся по имени и фамилии.
+     */
+    private String getUserAppeal(final User user) {
+        final String appeal = user.getUserName();
+
+        if (appeal == null) {
+            return String.format("%s %s", user.getFirstName(), user.getLastName());
+        }
+
+        return appeal;
+    }
+
+    /**
+     * Обработчик команды помощи.
+     */
     @Override
     public void execute(AbsSender absSender, User user, Chat chat, String[] strings) {
         sendAnswer(absSender, chat.getId(),
                 """
                         Я музыкальный бот, для работы со мной вы должны пройти аутентификацию
-
                         Для этого нажмите /auth
 
                         Я могу показать текущий трек, играющий на платформе Spotify
@@ -36,6 +58,7 @@ public class HelpCommand extends ServiceCommand {
 
                         Команды, вызываемые в любом чате:
                         @spotify_now_bot likedsongs - создание плейлиста с вашими любимыми треками
-                        @spotify_now_bot nowplaying - ссылка на текущий воспроизводимый трек""");
+                        @spotify_now_bot nowplaying - ссылка на текущий воспроизводимый трек
+                        """);
     }
 }
