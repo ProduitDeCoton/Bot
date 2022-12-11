@@ -44,26 +44,25 @@ public class AddCommand extends ServiceCommand {
      * Обработка команды добавления трека в очередь.
      */
     @Override
-    public void execute(final AbsSender absSender, final User user, final Chat chat, final String[] args) {
-        final String userAppeal = getUserAppeal(user);
+    public void execute(AbsSender absSender, User user, Chat chat, String[] args) {
 
         if (ActiveGroups.getGroupSession(chat) == null) {
-            sendAnswer(absSender, chat.getId(), this.getCommandIdentifier(), userAppeal,
-                    new StringBuilder()
-                            .append("Групповая музыкальная сессия в этом чате не создана.")
-                            .append("\n\n")
-                            .append("Запустите групповую сессию при помощи команды /group").toString());
+            sendAnswer(absSender, chat.getId(),
+                    """
+                            Групповая музыкальная сессия в этом чате не создана.
+
+                            Запустите групповую сессию при помощи команды /group""");
             return;
         }
 
         final User leader = ActiveGroups.getGroupSession(chat).getLeader();
 
         if (ActiveUsers.getSession(leader) == null) {
-            sendAnswer(absSender, chat.getId(), this.getCommandIdentifier(), userAppeal,
-                    new StringBuilder()
-                            .append("Пожалуйста, авторизуйтесь в Spotify в личных сообщениях со мной.")
-                            .append("\n\n")
-                            .append("Для этого введите в чат со мной команду /auth").toString());
+            sendAnswer(absSender, chat.getId(),
+                    """
+                            Пожалуйста, авторизуйтесь в Spotify в личных сообщениях со мной.
+
+                            Для этого введите в чат со мной команду /auth""");
             return;
         }
 
@@ -97,19 +96,17 @@ public class AddCommand extends ServiceCommand {
 
         } catch (SpotifyActionFailedException e) {
             ActiveGroups.closeGroupSession(chat);
-            sendAnswer(absSender, chat.getId(), this.getCommandIdentifier(), userAppeal,
-                    new StringBuilder()
-                            .append("Похоже, у лидера отсутствует подписка Spotify Premium. ")
-                            .append("Групповая сессия закрыта.")
-                            .append("\n\n")
-                            .append("Попробуйте создать группу с другим лидером, у которого оплачена подписка.").toString());
+            sendAnswer(absSender, chat.getId(),
+                    """
+                            Похоже, у лидера отсутствует подписка Spotify Premium. Групповая сессия закрыта.
+
+                            Попробуйте создать группу с другим лидером, у которого оплачена подписка.""");
             return;
         }
 
-        sendAnswer(absSender, chat.getId(), this.getCommandIdentifier(), userAppeal,
-                String.format("[%s — %s](%s) добавлена в очередь",
-                        foundTrack.getName(),
-                        foundTrack.getArtists().get(0).getName(),
-                        foundTrack.getExternalUrls().getSpotify()));
+        sendAnswer(absSender, chat.getId(),
+                "[" + foundTrack.getName() + " — " + foundTrack.getArtists().get(0).getName()
+                        + "](" + foundTrack.getExternalUrls().getSpotify() + ") добавлена в очередь."
+        );
     }
 }

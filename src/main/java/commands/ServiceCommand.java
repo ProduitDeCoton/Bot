@@ -17,7 +17,7 @@ abstract class ServiceCommand extends BotCommand {
     /**
      * Отправка ответа пользователю
      */
-    void sendAnswer(AbsSender absSender, Long chatId, String commandName, String userName, String text) {
+    void sendAnswer(AbsSender absSender, Long chatId, String text) {
         SendMessage message = new SendMessage();
         message.enableMarkdown(true);
         message.setChatId(chatId.toString());
@@ -25,6 +25,8 @@ abstract class ServiceCommand extends BotCommand {
         try {
             absSender.execute(message);
         } catch (TelegramApiException e) {
+            System.out.println(e.getMessage());
+            e.printStackTrace();
         }
     }
 }

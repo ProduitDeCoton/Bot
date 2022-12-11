@@ -45,24 +45,23 @@ public class GroupCommand extends ServiceCommand {
      * Обработка команды создания группового прослушивания.
      */
     @Override
-    public void execute(final AbsSender absSender, final User user, final Chat chat, final String[] args) {
-        final String userAppeal = getUserAppeal(user);
+    public void execute(AbsSender absSender, User user, Chat chat, String[] args) {
 
         if (chat.getType().equals("private")) {
-            sendAnswer(absSender, chat.getId(), this.getCommandIdentifier(), userAppeal,
-                    new StringBuilder()
-                            .append("Похоже, вы пытаетесь создать групповую сессию в личном чате.")
-                            .append("\n\n")
-                            .append("Создайте групповую сессию в чате со своими друзьями.").toString());
+            sendAnswer(absSender, chat.getId(),
+                    """
+                            Похоже, вы пытаетесь создать групповую сессию в личном чате.
+
+                            Создайте групповую сессию в чате со своими друзьями.""");
             return;
         }
 
         if (ActiveUsers.getSession(user) == null) {
-            sendAnswer(absSender, chat.getId(), this.getCommandIdentifier(), userAppeal,
-                    new StringBuilder()
-                            .append("Пожалуйста, авторизуйтесь в Spotify в личных сообщениях со мной.")
-                            .append("\n\n")
-                            .append("Для этого введите в чат со мной команду /auth").toString());
+            sendAnswer(absSender, chat.getId(),
+                    """
+                            Пожалуйста, авторизуйтесь в Spotify в личных сообщениях со мной.
+
+                            Для этого введите в чат со мной команду /auth""");
             return;
         }
 
@@ -72,11 +71,10 @@ public class GroupCommand extends ServiceCommand {
 
         final var devices = ActiveUsers.getSession(user).getSpotifyApi().getAvailableDevices().getDevices();
 
-        if (devices.isEmpty()) {
-            sendAnswer(absSender, chat.getId(), this.getCommandIdentifier(), userAppeal,
-                    new StringBuilder()
-                            .append("Spotify не запущен ни на одном устройстве. ")
-                            .append("Пожалуйста, запустите приложение и повторите попытку.").toString());
+        if (devices.size() == 0) {
+            sendAnswer(absSender, chat.getId(),
+                    "Spotify не запущен ни на одном устройстве. Пожалуйста, запустите " +
+                            "приложение и повторите попытку");
             return;
         }
 
