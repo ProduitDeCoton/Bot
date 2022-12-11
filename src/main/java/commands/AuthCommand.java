@@ -21,9 +21,11 @@ public class AuthCommand extends ServiceCommand {
                 String.format("%s %s", user.getLastName(), user.getFirstName());
 
         if (!chat.getType().equals("private")) {
-            sendAnswer(absSender, chat.getId(), this.getCommandIdentifier(), userName,
-                    "Похоже, вы пытаетесь авторизоваться в публичном чате.\n\n" +
-                            "Пожалуйста, выполняйте авторизацию в личном чате со мной.");
+            sendAnswer(absSender, chat.getId(),
+                    """
+                            Похоже, вы пытаетесь авторизоваться в публичном чате.
+
+                            Пожалуйста, выполняйте авторизацию в личном чате со мной.""");
             return;
         }
 
@@ -40,7 +42,7 @@ public class AuthCommand extends ServiceCommand {
                 //.replace("_", "\\_");
 
         userName = userName.replace("_", "\\_");
-        sendAnswer(absSender, chat.getId(), this.getCommandIdentifier(), userName,
+        sendAnswer(absSender, chat.getId(),
                 userName + ", пожалуйста, пройдите по ссылке ниже. Пройдите аутентификацию и предоставьте " +
                         "разрешения для работы бота." + "\n" + "\n" + "[Пройти авторизацию]" + "(" + redirectLink + ")" + "\n" + "\n" +
                         "После аутентификации в адресной строке появится ссылка с кодом. Отправьте, пожалуйста, " +

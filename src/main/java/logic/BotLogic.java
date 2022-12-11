@@ -36,6 +36,7 @@ public final class BotLogic extends TelegramLongPollingCommandBot {
         register(new AuthCommand("auth", "Авторизация в Spotify"));
         register(new GroupCommand("group", "Создание групповой сессии"));
         register(new AddCommand("add", "Добавить трек в очередь"));
+        register(new SkipCommand("skip", "Пропуск текущего трека"));
     }
 
     @Override
@@ -111,8 +112,10 @@ public final class BotLogic extends TelegramLongPollingCommandBot {
             }
             default -> {
                 InputTextMessageContent message = new InputTextMessageContent();
-                message.setMessageText("Неправильная команда\n\nДля просмотра доступных команд" +
-                        " используйте /help в чате со мной");
+                message.setMessageText("""
+                        Неправильная команда
+
+                        Для просмотра доступных команд используйте /help в чате со мной""");
                 inlineQueryResults.add(new InlineQueryResultArticle("Wrong Query", "Ожидание команды...", message));
                 cacheTime = 3;
             }
@@ -140,11 +143,14 @@ public final class BotLogic extends TelegramLongPollingCommandBot {
 
         try {
             ActiveGroups.getGroupSession(chat).transferPlayback(update.getCallbackQuery().getData());
+            ActiveUsers.getSession(leader).getSpotifyApi().skipToNextTrack(null);
         } catch (SpotifyActionFailedException e) {
             ActiveGroups.closeGroupSession(chat);
             setAnswer(update.getCallbackQuery().getMessage().getChatId(),
-                    "Похоже, у лидера отсутствует подписка Spotify Premium. Групповая сессия закрыта.\n\n" +
-                            "Попробуйте создать группу с другим лидером, у которого оплачена подписка.");
+                    """
+                            Похоже, у лидера отсутствует подписка Spotify Premium. Групповая сессия закрыта.
+
+                            Попробуйте создать группу с другим лидером, у которого оплачена подписка.""");
             return;
         }
 
