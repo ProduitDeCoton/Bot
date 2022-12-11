@@ -18,7 +18,7 @@ import spotifyTools.SpotifySession;
 import static org.mockito.Mockito.*;
 
 /**
- * Тестирование сообщений для пользователя в разных случаях вызова команды /add.
+ * Тестирование реакции обработчика команды /add в разных случаях обращения.
  * /add добавляет трек в очередь проигрываемых.
  */
 public class AddCommandTest {

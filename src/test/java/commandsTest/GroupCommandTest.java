@@ -17,8 +17,8 @@ import static org.mockito.Mockito.*;
 import java.util.ArrayList;
 
 /**
- * Тестирование сообщений, отправляемых пользователю при создании групповой
- * сессии. Групповая сессия создаётся командой /group.
+ *  Тестирование реакции обработчика команды /group в разных случаях обращения.
+ *  Групповая сессия создаётся командой /group.
  */
 public class GroupCommandTest {
     private final SpotifySession session = Mockito.mock(SpotifySession.class, RETURNS_DEEP_STUBS);
