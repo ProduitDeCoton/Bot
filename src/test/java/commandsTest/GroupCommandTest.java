@@ -17,7 +17,8 @@ import static org.mockito.Mockito.*;
 import java.util.ArrayList;
 
 /**
- * Тестирование обработки команды /group.
+ * Тестирование сообщений, отправляемых пользователю при создании групповой
+ * сессии. Групповая сессия создаётся командой /group.
  */
 public class GroupCommandTest {
     private final SpotifySession session = Mockito.mock(SpotifySession.class, RETURNS_DEEP_STUBS);
@@ -65,36 +66,37 @@ public class GroupCommandTest {
         final Chat chat = new Chat(1000L, "group");
         final AbsSender absSender = Mockito.mock(AbsSender.class, Mockito.CALLS_REAL_METHODS);
 
-        MockedStatic<ActiveGroups> ag=mockStatic(ActiveGroups.class);
-        ag.when(() -> ActiveGroups.getGroupSession(chat)).thenReturn(null);
+        try(MockedStatic<ActiveGroups> mockActiveGroups = mockStatic(ActiveGroups.class)) {
+            mockActiveGroups.when(() -> ActiveGroups.getGroupSession(chat)).thenReturn(null);
 
-        final String correctAnswer = "Пожалуйста, авторизуйтесь в Spotify в личных сообщениях со мной." +
-                "\n\n" +
-                "Для этого введите в чат со мной команду /auth";
+            final String correctAnswer = new StringBuilder()
+                    .append("Пожалуйста, авторизуйтесь в Spotify в личных сообщениях со мной.")
+                    .append("\n\n")
+                    .append("Для этого введите в чат со мной команду /auth").toString();
 
-        doAnswer(invocation -> {
-            String answer = null;
+            doAnswer(invocation -> {
+                String answer = null;
 
-            if (chat.getType().equals("private")) {
-                Assert.fail();
-            }
+                if (!chat.getType().equals("group")) {
+                    Assert.fail();
+                }
 
-            if (ActiveGroups.getGroupSession(chat) != null) {
-                Assert.fail();
-            }
+                if (ActiveGroups.getGroupSession(chat) != null) {
+                    Assert.fail();
+                }
 
-            else {
-                answer = "Пожалуйста, авторизуйтесь в Spotify в личных сообщениях со мной." +
-                        "\n\n" +
-                        "Для этого введите в чат со мной команду /auth";
-            }
+                answer = new StringBuilder()
+                        .append("Пожалуйста, авторизуйтесь в Spotify в личных сообщениях со мной.")
+                        .append("\n\n")
+                        .append("Для этого введите в чат со мной команду /auth").toString();
 
-            Assert.assertEquals(correctAnswer, answer);
-            return null;
+                Assert.assertEquals(correctAnswer, answer);
+                return null;
 
-        }).when(groupCommand).execute(absSender, user, chat, null);
+            }).when(groupCommand).execute(absSender, user, chat, null);
 
-        groupCommand.execute(absSender, user, chat, null);
+            groupCommand.execute(absSender, user, chat, null);
+        }
     }
 
     /**
@@ -117,18 +119,12 @@ public class GroupCommandTest {
         doAnswer(invocation -> {
             String answer = null;
 
-            if (chat.getType().equals("private")) {
-                answer = new StringBuilder()
-                        .append("Похоже, вы пытаетесь создать групповую сессию в личном чате.")
-                        .append("\n\n")
-                        .append("Создайте групповую сессию в чате со своими друзьями.").toString();
+            if (!chat.getType().equals("group")) {
+                Assert.fail();
             }
 
             if (ActiveGroups.getGroupSession(chat) == null) {
-                answer = new StringBuilder()
-                        .append("Пожалуйста, авторизуйтесь в Spotify в личных сообщениях со мной.")
-                        .append("\n\n")
-                        .append("Для этого введите в чат со мной команду /auth").toString();
+                Assert.fail();
             }
 
             final var devices = session.getSpotifyApi().getAvailableDevices().getDevices();
