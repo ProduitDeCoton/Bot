@@ -16,9 +16,7 @@ public class HelpCommand extends ServiceCommand {
 
     @Override
     public void execute(AbsSender absSender, User user, Chat chat, String[] strings) {
-        String userName = (user.getUserName() != null) ? user.getUserName() :
-                String.format("%s %s", user.getLastName(), user.getFirstName());
-        sendAnswer(absSender, chat.getId(), this.getCommandIdentifier(), userName,
+        sendAnswer(absSender, chat.getId(),
                 """
                         Я музыкальный бот, для работы со мной вы должны пройти аутентификацию
 
