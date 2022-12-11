@@ -20,20 +20,22 @@ public class GroupCommand extends ServiceCommand {
 
     @Override
     public void execute(AbsSender absSender, User user, Chat chat, String[] strings) {
-        String userName = (user.getUserName() != null) ? user.getUserName() :
-                String.format("%s %s", user.getLastName(), user.getFirstName());
 
         if (chat.getType().equals("private")) {
-            sendAnswer(absSender, chat.getId(), this.getCommandIdentifier(), userName,
-                    "Похоже, вы пытаетесь создать групповую сессию в личном чате.\n\n" +
-                            "Создайте групповую сессию в чате со своими друзьями.");
+            sendAnswer(absSender, chat.getId(),
+                    """
+                            Похоже, вы пытаетесь создать групповую сессию в личном чате.
+
+                            Создайте групповую сессию в чате со своими друзьями.""");
             return;
         }
 
         if (ActiveUsers.getSession(user) == null) {
-            sendAnswer(absSender, chat.getId(), this.getCommandIdentifier(), userName,
-                    "Пожалуйста, авторизуйтесь в Spotify в личных сообщениях со мной." +
-                    "\n\n" + "Для этого введите в чат со мной команду /auth");
+            sendAnswer(absSender, chat.getId(),
+                    """
+                            Пожалуйста, авторизуйтесь в Spotify в личных сообщениях со мной.
+
+                            Для этого введите в чат со мной команду /auth""");
             return;
         }
 
@@ -45,7 +47,7 @@ public class GroupCommand extends ServiceCommand {
         var devices = ActiveUsers.getSession(user).getSpotifyApi().getAvailableDevices().getDevices();
 
         if (devices.size() == 0) {
-            sendAnswer(absSender, chat.getId(), this.getCommandIdentifier(), userName,
+            sendAnswer(absSender, chat.getId(),
                     "Spotify не запущен ни на одном устройстве. Пожалуйста, запустите " +
                             "приложение и повторите попытку");
             return;
