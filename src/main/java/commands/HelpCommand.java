@@ -57,8 +57,8 @@ public class HelpCommand extends ServiceCommand {
                         /add (трек) - добавление трека в очередь
 
                         Команды, вызываемые в любом чате:
-                        @spotify_now_bot likedsongs - создание плейлиста с вашими любимыми треками
-                        @spotify_now_bot nowplaying - ссылка на текущий воспроизводимый трек
+                        @spotify\\_now\\_bot likedsongs - создание плейлиста с вашими любимыми треками
+                        @spotify\\_now\\_bot nowplaying - ссылка на текущий воспроизводимый трек
                         """);
     }
 }
