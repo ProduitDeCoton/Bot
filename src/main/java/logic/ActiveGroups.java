@@ -8,7 +8,11 @@ import spotifyTools.SpotifySession;
 import java.util.Map;
 import java.util.concurrent.ConcurrentHashMap;
 
+/**
+ * Активные групповые сессии.
+ */
 public class ActiveGroups {
+    // TODO: избавиться от static
     private static Map<Long, SpotifyGroup> activeGroups = new ConcurrentHashMap<>();
 
     public static void createGroup(User leader, Chat chat) {
