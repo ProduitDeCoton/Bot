@@ -6,7 +6,11 @@ import spotifyTools.SpotifySession;
 import java.util.Map;
 import java.util.concurrent.ConcurrentHashMap;
 
+/**
+ * Активные пользовательские сессии.
+ */
 public class ActiveUsers {
+    // TODO: избавиться от static
     private static Map<Long, SpotifySession> activeUsers = new ConcurrentHashMap<>();
 
     public static void updateActiveUsers(User user, SpotifySession session) {
