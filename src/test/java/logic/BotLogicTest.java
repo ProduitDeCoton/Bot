@@ -9,17 +9,6 @@ public class BotLogicTest {
     private final FakeBot fakeBot = new FakeBot();
 
     @Test
-    public void nonCommandExecuteWithoutCode() {
-        Update update = new Update();
-        Message message = new Message();
-        message.setText("testcase");
-        update.setMessage(message);
-
-        fakeBot.processNonCommandUpdate(update);
-        Assert.assertEquals(FakeBot.getLastAnswer().getText(), "Похоже, вы неправильно ввели ссылку, попробуйте ещё раз");
-    }
-
-    @Test
     public void nonCommandExecuteWithNullText() {
         Update update = new Update();
         Message message = new Message();
