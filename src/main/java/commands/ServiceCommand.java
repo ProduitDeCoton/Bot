@@ -8,7 +8,7 @@ import org.telegram.telegrambots.meta.exceptions.TelegramApiException;
 /**
  * Суперкласс для сервисных команд
  */
-abstract class ServiceCommand extends BotCommand {
+public abstract class ServiceCommand extends BotCommand {
 
     ServiceCommand(String identifier, String description) {
         super(identifier, description);
@@ -17,7 +17,7 @@ abstract class ServiceCommand extends BotCommand {
     /**
      * Отправка ответа пользователю
      */
-    void sendAnswer(AbsSender absSender, Long chatId, String text) {
+    public void sendAnswer(AbsSender absSender, Long chatId, String text) {
         SendMessage message = new SendMessage();
         message.enableMarkdown(true);
         message.setChatId(chatId.toString());

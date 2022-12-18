@@ -91,10 +91,10 @@ public class AddCommand extends ServiceCommand {
 
         final var foundTrack = tracks.get(0);
 
-        try {
+        if (ActiveUsers.getSession(leader).getSpotifyApi().getCurrentUser().getProduct().equals("premium"))
             ActiveUsers.getSession(leader).getSpotifyApi().addItemToQueue(foundTrack.getUri(), null);
 
-        } catch (SpotifyActionFailedException e) {
+        else {
             ActiveGroups.closeGroupSession(chat);
             sendAnswer(absSender, chat.getId(),
                     """
