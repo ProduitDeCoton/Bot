@@ -7,8 +7,17 @@ import org.telegram.telegrambots.meta.api.objects.User;
 import org.telegram.telegrambots.meta.bots.AbsSender;
 import spotify.exceptions.SpotifyActionFailedException;
 
+
+/**
+ * Обработка сообщений с командой пропуска трека в очереди.
+ */
 public class SkipCommand extends ServiceCommand {
 
+    /**
+     * Зарегистрировать команду пропуска.
+     * @param identifier уникальное имя команды
+     * @param description краткое описание функционала команды
+     */
     public SkipCommand(String identifier, String description) {
         super(identifier, description);
     }

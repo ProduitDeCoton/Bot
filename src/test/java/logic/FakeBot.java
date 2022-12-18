@@ -10,6 +10,7 @@ import org.telegram.telegrambots.meta.api.objects.Message;
 import org.telegram.telegrambots.meta.api.objects.Update;
 import org.telegram.telegrambots.meta.api.objects.User;
 
+// TODO: подготовить FakeBot для написания тестов AddCommand, GroupCommand, SkipCommand
 public class FakeBot extends TelegramLongPollingCommandBot {
     private final String BOT_NAME = "fake_bot";
     private final String BOT_TOKEN = "88005553535";
