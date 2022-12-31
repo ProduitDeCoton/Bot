@@ -14,10 +14,10 @@ import org.telegram.telegrambots.meta.api.objects.inlinequery.inputmessageconten
 import org.telegram.telegrambots.meta.api.objects.inlinequery.result.InlineQueryResult;
 import org.telegram.telegrambots.meta.api.objects.inlinequery.result.InlineQueryResultArticle;
 import org.telegram.telegrambots.meta.exceptions.TelegramApiException;
+import resources.CommonAnswers;
 import spotify.exceptions.SpotifyActionFailedException;
 
 import java.util.ArrayList;
-
 
 
 public final class BotLogic extends TelegramLongPollingCommandBot {
@@ -87,7 +87,7 @@ public final class BotLogic extends TelegramLongPollingCommandBot {
         try {
             execute(answer);
         } catch (TelegramApiException e) {
-            System.out.println("TelegramApiException");
+            System.out.println(e.getMessage());
             e.printStackTrace();
         }
     }
@@ -95,7 +95,7 @@ public final class BotLogic extends TelegramLongPollingCommandBot {
 
     public void processInlineQueryUpdate(Update update) {
         var inlineQueryId = update.getInlineQuery().getId();
-        Integer cacheTime;
+        int cacheTime;
 
         ArrayList<InlineQueryResult> inlineQueryResults = new ArrayList<>();
 
@@ -146,18 +146,15 @@ public final class BotLogic extends TelegramLongPollingCommandBot {
             ActiveUsers.getSession(leader).getSpotifyApi().skipToNextTrack(null);
         } catch (SpotifyActionFailedException e) {
             ActiveGroups.closeGroupSession(chat);
-            setAnswer(update.getCallbackQuery().getMessage().getChatId(),
-                    """
-                            Похоже, у лидера отсутствует подписка Spotify Premium. Групповая сессия закрыта.
-
-                            Попробуйте создать группу с другим лидером, у которого оплачена подписка.""");
+            setAnswer(update.getCallbackQuery().getMessage().getChatId(), CommonAnswers.GROUP_LEADER_PREMIUM_EXPIRED);
             return;
         }
 
         setAnswer(update.getCallbackQuery().getMessage().getChatId(),
                 "Устройство " + update.getCallbackQuery().getData() + " выбрано. " +
                         "Приятного прослушивания!" + "\n\n" +
-                        "/add - добавить трек в очередь");
+                        "/add - добавить трек в очередь\n" +
+                        "/skip - пропустить трек");
     }
 
 }

@@ -5,6 +5,7 @@ import logic.ActiveUsers;
 import org.telegram.telegrambots.meta.api.objects.Chat;
 import org.telegram.telegrambots.meta.api.objects.User;
 import org.telegram.telegrambots.meta.bots.AbsSender;
+import resources.CommonAnswers;
 import spotify.api.enums.QueryType;
 import spotify.exceptions.SpotifyActionFailedException;
 import java.util.List;
@@ -20,22 +21,14 @@ public class AddCommand extends ServiceCommand {
     public void execute(AbsSender absSender, User user, Chat chat, String[] strings) {
 
         if (ActiveGroups.getGroupSession(chat) == null) {
-            sendAnswer(absSender, chat.getId(),
-                    """
-                            Групповая музыкальная сессия в этом чате не создана.
-
-                            Запустите групповую сессию при помощи команды /group""");
+            sendAnswer(absSender, chat.getId(), CommonAnswers.GROUP_NOT_CREATED);
             return;
         }
 
         User leader = ActiveGroups.getGroupSession(chat).getLeader();
 
         if (ActiveUsers.getSession(leader) == null) {
-            sendAnswer(absSender, chat.getId(),
-                    """
-                            Пожалуйста, авторизуйтесь в Spotify в личных сообщениях со мной.
-
-                            Для этого введите в чат со мной команду /auth""");
+            sendAnswer(absSender, chat.getId(), CommonAnswers.USER_NOT_AUTHORISED);
             return;
         }
 
@@ -69,11 +62,7 @@ public class AddCommand extends ServiceCommand {
             ActiveUsers.getSession(leader).getSpotifyApi().addItemToQueue(foundTrack.getUri(), null);
         } catch (SpotifyActionFailedException e) {
             ActiveGroups.closeGroupSession(chat);
-            sendAnswer(absSender, chat.getId(),
-                    """
-                            Похоже, у лидера отсутствует подписка Spotify Premium. Групповая сессия закрыта.
-
-                            Попробуйте создать группу с другим лидером, у которого оплачена подписка.""");
+            sendAnswer(absSender, chat.getId(), CommonAnswers.GROUP_LEADER_PREMIUM_EXPIRED);
             return;
         }
 

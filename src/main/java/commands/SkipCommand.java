@@ -5,6 +5,7 @@ import logic.ActiveUsers;
 import org.telegram.telegrambots.meta.api.objects.Chat;
 import org.telegram.telegrambots.meta.api.objects.User;
 import org.telegram.telegrambots.meta.bots.AbsSender;
+import resources.CommonAnswers;
 import spotify.exceptions.SpotifyActionFailedException;
 
 public class SkipCommand extends ServiceCommand {
@@ -16,11 +17,7 @@ public class SkipCommand extends ServiceCommand {
     @Override
     public void execute(AbsSender absSender, User user, Chat chat, String[] strings) {
         if (ActiveGroups.getGroupSession(chat) == null) {
-            sendAnswer(absSender, chat.getId(),
-                    """
-                            Групповая музыкальная сессия в этом чате не создана.
-
-                            Запустите групповую сессию при помощи команды /group""");
+            sendAnswer(absSender, chat.getId(), CommonAnswers.GROUP_NOT_CREATED);
             return;
         }
 
@@ -43,15 +40,9 @@ public class SkipCommand extends ServiceCommand {
 
             String messageText;
             if (chat.getType().equals("private")) {
-                messageText = """
-                        Похоже, у вас отсутствует подписка Spotify Premium.
-
-                        Продлите срок действия подписки и попробуйте ещё раз.""";
+                messageText = CommonAnswers.USER_PREMIUM_EXPIRED;
             } else {
-                messageText = """
-                        Похоже, у лидера отсутствует подписка Spotify Premium. Групповая сессия закрыта.
-
-                        Попробуйте создать группу с другим лидером, у которого оплачена подписка.""";
+                messageText = CommonAnswers.GROUP_LEADER_PREMIUM_EXPIRED;
             }
 
             ActiveGroups.closeGroupSession(chat);

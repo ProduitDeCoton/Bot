@@ -8,6 +8,7 @@ import org.telegram.telegrambots.meta.api.objects.replykeyboard.InlineKeyboardMa
 import org.telegram.telegrambots.meta.api.objects.replykeyboard.buttons.InlineKeyboardButton;
 import org.telegram.telegrambots.meta.bots.AbsSender;
 import org.telegram.telegrambots.meta.exceptions.TelegramApiException;
+import resources.CommonAnswers;
 
 import java.util.ArrayList;
 import java.util.List;
@@ -31,11 +32,7 @@ public class GroupCommand extends ServiceCommand {
         }
 
         if (ActiveUsers.getSession(user) == null) {
-            sendAnswer(absSender, chat.getId(),
-                    """
-                            Пожалуйста, авторизуйтесь в Spotify в личных сообщениях со мной.
-
-                            Для этого введите в чат со мной команду /auth""");
+            sendAnswer(absSender, chat.getId(), CommonAnswers.USER_NOT_AUTHORISED);
             return;
         }
 

@@ -33,6 +33,7 @@ public class HelpCommand extends ServiceCommand {
 
                         /group - создание групповой сессии
                         /add (трек) - добавление трека в очередь
+                        /skip - пропуск текущего трека
 
                         Команды, вызываемые в любом чате:
                         @spotify_now_bot likedsongs - создание плейлиста с вашими любимыми треками
