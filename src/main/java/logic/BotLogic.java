@@ -37,6 +37,7 @@ public final class BotLogic extends TelegramLongPollingCommandBot {
         register(new GroupCommand("group", "Создание групповой сессии"));
         register(new AddCommand("add", "Добавить трек в очередь"));
         register(new SkipCommand("skip", "Пропуск текущего трека"));
+        register(new CloseGroupSessionCommand("close", "Закрытие групповой сессии"));
     }
 
     @Override
