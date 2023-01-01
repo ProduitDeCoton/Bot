@@ -4,7 +4,7 @@ package resources;
  * Класс для часто повторяющихся ответов бота.
  * Содержит в себе строковые константы с ответами.
  */
-public class CommonAnswers {
+public final class CommonAnswers {
     public static final String USER_NOT_AUTHORISED =
             """
              Пожалуйста, авторизуйтесь в Spotify в личных сообщениях со мной.
