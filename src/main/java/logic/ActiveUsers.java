@@ -7,7 +7,7 @@ import java.util.Map;
 import java.util.concurrent.ConcurrentHashMap;
 
 public class ActiveUsers {
-    private static Map<Long, SpotifySession> activeUsers = new ConcurrentHashMap<>();
+    private static final Map<Long, SpotifySession> activeUsers = new ConcurrentHashMap<>();
 
     public static void updateActiveUsers(User user, SpotifySession session) {
         activeUsers.put(user.getId(), session);
